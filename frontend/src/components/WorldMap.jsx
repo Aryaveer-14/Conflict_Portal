@@ -13,8 +13,8 @@ const getSeverityColor = (severity) => {
 };
 
 const getSeverityRadius = (severity) => {
-  // Increase radius based on severity
-  return severity * 4 + 4; 
+  // Decrease radius based on severity for smaller dots
+  return severity * 2 + 2; 
 };
 
 const WorldMap = ({ events = [], onEventClick }) => {
