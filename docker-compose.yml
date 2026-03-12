@@ -1,0 +1,44 @@
+##
+## docker-compose.yml
+## -------------------
+## Docker Compose configuration for the GCIP platform.
+## Defines two services: backend (FastAPI) and frontend (React/Vite).
+## Run with:  docker-compose up --build
+##
+## Expected result:
+##   Backend  → http://localhost:8000
+##   Frontend → http://localhost:5173
+##
+
+services:
+
+  # ── FastAPI Backend Service ──────────────────────────────────────────────────
+  # Runs the Python/FastAPI backend with Uvicorn
+  # Loads GEMINI_API_KEY and other secrets from backend/.env
+  backend:
+    build:
+      context: ./backend                    # Build from the backend directory
+    ports:
+      - "8000:8000"                          # Map container port 8000 → host port 8000
+    env_file:
+      - ./backend/.env                       # Load environment variables (GEMINI_API_KEY)
+    volumes:
+      - ./backend:/app                       # Mount source code for live reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+
+  # ── React/Vite Frontend Service ──────────────────────────────────────────────
+  # Runs the Vite dev server for the React frontend
+  # Connects to backend via VITE_API_BASE_URL
+  frontend:
+    build:
+      context: ./frontend                    # Build from the frontend directory
+    ports:
+      - "5173:5173"                          # Map container port 5173 → host port 5173
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000   # Frontend calls backend at this URL
+    volumes:
+      - ./frontend:/app                      # Mount source code for live reload
+      - /app/node_modules                    # Exclude node_modules from volume mount
+    command: npm run dev -- --host
+    depends_on:
+      - backend                              # Wait for backend to start first
