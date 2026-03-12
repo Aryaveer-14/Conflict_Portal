@@ -54,3 +54,7 @@ class CommodityResponse(BaseModel):
     natural_gas: CommoditySeries
     wheat: CommoditySeries
     timestamp: str
+
+class SimulationRequest(BaseModel):
+    scenario_type: str
+    severity: int
