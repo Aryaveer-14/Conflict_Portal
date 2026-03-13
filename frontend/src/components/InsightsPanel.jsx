@@ -1,4 +1,4 @@
-import { FileText, TrendingUp, Shield, AlertTriangle, Cpu } from 'lucide-react';
+import { FileText, TrendingUp, Shield } from 'lucide-react';
 import CommodityChart from './CommodityChart';
 
 const riskData = [
