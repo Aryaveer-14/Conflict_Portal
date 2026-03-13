@@ -17,9 +17,18 @@ const NavBar = () => {
     <nav className="bg-surface border-b border-hover px-4 py-3 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center relative">
         {/* Logo */}
-        <Link to="/dashboard" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-accent-green/10 flex items-center justify-center border border-accent-green/30 group-hover:bg-accent-green/20 transition-colors">
-            <Globe className="w-5 h-5 text-accent-green" />
+<Link to="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 flex items-center justify-center relative bg-accent-green/5 rounded-full border border-accent-green/20 group-hover:border-accent-green/50 transition-colors">
+              <img 
+                src="/assets/gcip_logo.png" 
+                alt="GCIP Logo" 
+                className="w-12 h-12 object-contain scale-[1.3] drop-shadow-md"
+                onError={(e) => {
+                  e.target.style.display = 'none';
+                  e.target.nextElementSibling.style.display = 'block';
+                }}
+              />
+              <Globe className="w-6 h-6 text-accent-green hidden absolute" />
           </div>
           <span className="font-bold text-xl tracking-wide bg-gradient-to-r from-primary to-muted bg-clip-text text-transparent">
             GCIP Platform

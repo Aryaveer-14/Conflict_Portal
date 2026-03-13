@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
-import { Send, Bot, Loader2, Sparkles } from 'lucide-react';
+import { Send, Bot, Loader2, Sparkles, Square } from 'lucide-react';
 import ChatMessage from './ChatMessage';
 import ReactMarkdown from 'react-markdown';
 import { agentAPI } from '../api/client';
@@ -31,7 +31,9 @@ const AIChat = () => {
   const [loading, setLoading] = useState(false);
   const [streamingIdx, setStreamingIdx] = useState(null);
   const [displayedText, setDisplayedText] = useState("");
+  const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef(null);
+  const typingStateRef = useRef({ fullText: "", currentIndex: 0 });
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -48,25 +50,42 @@ const AIChat = () => {
     };
   }, []);
 
-  const simulateTyping = useCallback((text, messageIndex) => {
+const simulateTyping = useCallback((text, messageIndex, startIndex = 0) => {
     if (intervalRef.current) clearInterval(intervalRef.current);
+
+    typingStateRef.current = { fullText: text, currentIndex: startIndex };
     
-    let currentIndex = 0;
-    setDisplayedText("");
+    if (startIndex === 0) setDisplayedText("");
     setStreamingIdx(messageIndex);
-    
+    setIsPaused(false);
+
     const typeChar = () => {
-      if (currentIndex < text.length) {
-        setDisplayedText(prev => prev + text[currentIndex]);
-        currentIndex++;
+      if (typingStateRef.current.currentIndex < typingStateRef.current.fullText.length) {
+        const nextIdx = typingStateRef.current.currentIndex + 1;
+        setDisplayedText(typingStateRef.current.fullText.slice(0, nextIdx));
+        typingStateRef.current.currentIndex = nextIdx;
       } else {
         clearInterval(intervalRef.current);
         setStreamingIdx(null);
       }
     };
-    
+
     intervalRef.current = setInterval(typeChar, 20);
   }, []);
+
+  const stopGeneration = useCallback(() => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    
+    setMessages(prev => {
+        const newMessages = [...prev];
+        if (streamingIdx !== null && newMessages[streamingIdx]) {
+            newMessages[streamingIdx].text = typingStateRef.current.fullText.slice(0, typingStateRef.current.currentIndex) + '... (Stopped by user)';
+        }
+        return newMessages;
+    });
+
+    setStreamingIdx(null);
+  }, [streamingIdx]);
 
   const handleSubmit = useCallback(async (e, queryText = null) => {
     e?.preventDefault();
@@ -130,17 +149,28 @@ const AIChat = () => {
   return (
     <div className="flex flex-col h-full w-full max-w-4xl mx-auto shadow-lg rounded-lg overflow-hidden border border-accent-green/20 bg-base">
       {/* Header */}
-      <div className="bg-surface border-b border-accent-green/20 p-4 flex items-center gap-3">
-        <div className="p-1.5 bg-accent-green/10 rounded-lg">
-          <Bot className="w-5 h-5 text-accent-green" />
-        </div>
-        <div>
-          <h2 className="text-lg font-semibold text-primary">GCIP Intelligence Agent</h2>
-          <div className="flex items-center gap-2 mt-1">
-            <span className="w-2 h-2 rounded-full bg-green-400" />
-            <span className="text-xs text-muted">AI Assistant Online</span>
+      <div className="bg-surface border-b border-accent-green/20 p-4 flex justify-between items-center">
+        <div className="flex items-center gap-3">
+          <div className="p-1.5 bg-accent-green/10 rounded-lg">
+            <Bot className="w-5 h-5 text-accent-green" />
+          </div>
+          <div>
+            <h2 className="text-lg font-semibold text-primary">GCIP Intelligence Agent</h2>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="w-2 h-2 rounded-full border border-green-400 bg-green-400/50" />
+              <span className="text-xs text-muted">AI Assistant Online</span>
+            </div>
           </div>
         </div>
+        {streamingIdx !== null && (
+          <button
+            onClick={stopGeneration}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-500 hover:bg-red-500/20 transition-colors"
+          >
+            <Square className="w-4 h-4 fill-current" />
+            <span className="text-sm font-bold uppercase tracking-wider">Stop</span>
+          </button>
+        )}
       </div>
 
       {/* Chat Area */}
