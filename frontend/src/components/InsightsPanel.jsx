@@ -45,7 +45,7 @@ const RiskBar = ({ label, score, color }) => {
     <div className="flex items-center gap-2">
       <span className="text-[9px] font-mono font-bold text-muted tracking-wider w-16 shrink-0">{label}</span>
       <div className="flex gap-[2px] flex-1">
-        {Array.from({ length: 10 }).map((_, i) => (
+        {[...Array(10).keys()].map((i) => (
           <div
             key={i}
             className="h-[6px] flex-1 rounded-[1px] transition-all duration-500"
