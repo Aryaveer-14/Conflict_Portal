@@ -16,7 +16,7 @@ import re
 from typing import Any, Dict, Optional, Union
 
 from fastapi import APIRouter
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 from services.gemini_service import ask_gemini
 from services.fallback_service import get_fallback
@@ -29,7 +29,7 @@ router = APIRouter()
 
 class AgentQuery(BaseModel):
     """Incoming user question with optional context."""
-    query: str
+    query: str = Field(..., min_length=3, description="The user's question (at least 3 characters)")
     context: Union[Dict[str, Any], str, None] = None
 
 

@@ -73,6 +73,11 @@ const Dashboard = () => {
 
   return (
     <div className="flex h-[calc(100vh-48px)] w-full overflow-hidden bg-base relative">
+      {loading && (
+        <div className="absolute top-2 right-2 z-50 text-[9px] font-mono text-muted animate-pulse tracking-widest">
+          SYNCING...
+        </div>
+      )}
       
       {/* Left Sidebar: Active Conflicts Feed */}
       <Sidebar

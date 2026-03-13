@@ -1,5 +1,5 @@
 import ConflictCard from './ConflictCard';
-import { AlertTriangle, Radio } from 'lucide-react';
+import { Radio } from 'lucide-react';
 
 const Sidebar = ({ conflicts, onConflictClick, selectedId }) => {
   const activeCount = conflicts.filter(c => c.severity >= 4).length;
