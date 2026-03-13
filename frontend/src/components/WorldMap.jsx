@@ -17,6 +17,45 @@ const getSeverityLabel = (severity) => {
   return 'LOW';
 };
 
+const createPopupContent = (event, color) => {
+  const container = document.createElement('div');
+  container.style.cssText = 'font-family:Inter,system-ui,sans-serif;';
+
+  const titleDiv = document.createElement('div');
+  titleDiv.style.cssText = 'font-size:12px;font-weight:700;color:#E6EDF3;margin-bottom:4px;';
+  titleDiv.textContent = event.title ?? '';
+  container.appendChild(titleDiv);
+
+  const locationDiv = document.createElement('div');
+  locationDiv.style.cssText = 'font-size:10px;color:#8B949E;margin-bottom:6px;';
+  locationDiv.textContent = event.location ?? '';
+  container.appendChild(locationDiv);
+
+  const bottomRow = document.createElement('div');
+  bottomRow.style.cssText = 'display:flex;align-items:center;gap:6px;';
+  container.appendChild(bottomRow);
+
+  const statusDot = document.createElement('span');
+  statusDot.style.cssText = `
+    width:6px;height:6px;border-radius:50%;
+    background:${color};
+    box-shadow:0 0 6px ${color}80;
+  `;
+  bottomRow.appendChild(statusDot);
+
+  const severityLabel = document.createElement('span');
+  severityLabel.style.cssText = "font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;color:" + color + ';letter-spacing:0.1em;';
+  severityLabel.textContent = getSeverityLabel(event.severity);
+  bottomRow.appendChild(severityLabel);
+
+  const severityText = document.createElement('span');
+  severityText.style.cssText = 'font-size:9px;color:#8B949E;margin-left:auto;';
+  severityText.textContent = `SEV ${event.severity}/5`;
+  bottomRow.appendChild(severityText);
+
+  return container;
+};
+
 // Custom pulsing markers component
 const PulsingMarkers = ({ events, onEventClick }) => {
   const map = useMap();
@@ -73,23 +112,7 @@ const PulsingMarkers = ({ events, onEventClick }) => {
         .on('click', () => onEventClick && onEventClick(event));
 
       // Custom popup
-      const popupContent = `
-        <div style="font-family:Inter,system-ui,sans-serif;">
-          <div style="font-size:12px;font-weight:700;color:#E6EDF3;margin-bottom:4px;">${event.title}</div>
-          <div style="font-size:10px;color:#8B949E;margin-bottom:6px;">${event.location}</div>
-          <div style="display:flex;align-items:center;gap:6px;">
-            <span style="
-              width:6px;height:6px;border-radius:50%;
-              background:${color};
-              box-shadow:0 0 6px ${color}80;
-            "></span>
-            <span style="font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;color:${color};letter-spacing:0.1em;">
-              ${getSeverityLabel(event.severity)}
-            </span>
-            <span style="font-size:9px;color:#8B949E;margin-left:auto;">SEV ${event.severity}/5</span>
-          </div>
-        </div>
-      `;
+      const popupContent = createPopupContent(event, color);
 
       marker.bindPopup(popupContent, {
         className: 'intel-popup',
