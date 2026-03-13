@@ -60,6 +60,26 @@ test_endpoint() {
     echo ""
 }
 
+# Test function for full URLs (not prefixed with BASE_URL)
+test_url() {
+    local name=$1
+    local url=$2
+    local expected_status=$3
+
+    echo -n "Testing $name... "
+
+    status=$(curl -s -o /dev/null -w "%{http_code}" "$url")
+
+    if [ "$status" = "$expected_status" ]; then
+        echo -e "${GREEN}✓ PASS${NC} (HTTP $status)"
+        TESTS_PASSED=$((TESTS_PASSED + 1))
+    else
+        echo -e "${RED}✗ FAIL${NC} (HTTP $status, expected $expected_status)"
+        TESTS_FAILED=$((TESTS_FAILED + 1))
+    fi
+    echo ""
+}
+
 # ── Health Checks ──────────────────────────────────────────────────────────────
 
 echo "📋 1. Health Checks"
@@ -131,12 +151,8 @@ test_endpoint "Get Cached Impact" "GET" "/impact/event/evt_001" "" "200"
 
 echo "📋 7. API Documentation"
 echo "---"
-curl -s -o /dev/null -w "%{http_code}" "$ROOT_URL/docs" | grep -q "200" \
-    && { echo -e "Testing OpenAPI Docs... ${GREEN}✓ PASS${NC} (HTTP 200)"; TESTS_PASSED=$((TESTS_PASSED + 1)); } \
-    || { echo -e "Testing OpenAPI Docs... ${RED}✗ FAIL${NC}"; TESTS_FAILED=$((TESTS_FAILED + 1)); }
-curl -s -o /dev/null -w "%{http_code}" "$ROOT_URL/redoc" | grep -q "200" \
-    && { echo -e "Testing ReDoc Docs... ${GREEN}✓ PASS${NC} (HTTP 200)"; TESTS_PASSED=$((TESTS_PASSED + 1)); } \
-    || { echo -e "Testing ReDoc Docs... ${RED}✗ FAIL${NC}"; TESTS_FAILED=$((TESTS_FAILED + 1)); }
+test_url "OpenAPI Docs" "$ROOT_URL/docs" "200"
+test_url "ReDoc Docs" "$ROOT_URL/redoc" "200"
 
 # ── Results ────────────────────────────────────────────────────────────────────
 
