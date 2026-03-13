@@ -1,58 +1,99 @@
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Sidebar from '../components/Sidebar';
 import MapPanel from '../components/MapPanel';
 import InsightsPanel from '../components/InsightsPanel';
 import EventDeepDive from '../components/EventDeepDive';
+import { eventsAPI } from '../api/client';
 
-// Mock Conflict Data for Sidebar
-// Added 'severity' property exactly as passed to the Map
-const mockConflicts = [
-  // Europe / Middle East / Africa
-  { id: 1,  title: "Ukraine Conflict Escalation",         location: "Ukraine",          date: "2026-03-10", severity: 5, lat: 48.38,   lon: 31.17   },
-  { id: 2,  title: "Red Sea Shipping Tensions",           location: "Yemen",            date: "2026-03-09", severity: 4, lat: 15.55,   lon: 48.52   },
-  { id: 3,  title: "Sudan Civil Unrest",                  location: "Sudan",            date: "2026-03-08", severity: 5, lat: 12.86,   lon: 30.22   },
-  { id: 4,  title: "Taiwan Strait Incursions",            location: "Taiwan",           date: "2026-03-12", severity: 3, lat: 23.69,   lon: 120.96  },
-  { id: 5,  title: "Eastern DRC Clashes",                 location: "DR Congo",         date: "2026-03-07", severity: 4, lat: -4.03,   lon: 21.75   },
-  { id: 6,  title: "Gaza-Israel Ongoing Hostilities",     location: "Gaza Strip",       date: "2026-03-11", severity: 5, lat: 31.35,   lon: 34.31   },
-  { id: 7,  title: "Sahel Insurgency",                    location: "Mali / Burkina Faso", date: "2026-03-06", severity: 4, lat: 12.36, lon: -1.53  },
-  // South America
-  { id: 8,  title: "Ecuador Gang Violence Escalation",    location: "Ecuador",          date: "2026-03-10", severity: 4, lat: -1.83,   lon: -78.18  },
-  { id: 9,  title: "Colombia FARC Dissident Activity",    location: "Colombia",         date: "2026-03-09", severity: 3, lat: 4.57,    lon: -74.30  },
-  { id: 10, title: "Haiti Security Crisis",               location: "Haiti",            date: "2026-03-08", severity: 4, lat: 18.97,   lon: -72.29  },
-  { id: 11, title: "Venezuela Border Tensions",           location: "Venezuela",        date: "2026-03-07", severity: 3, lat: 6.42,    lon: -66.59  },
-  { id: 12, title: "Peru Narco-Insurgency Clashes",       location: "Peru",             date: "2026-03-06", severity: 2, lat: -9.19,   lon: -75.02  },
-  // North America
-  { id: 13, title: "Mexico Cartel Territorial Conflict",  location: "Mexico",           date: "2026-03-11", severity: 4, lat: 23.63,   lon: -102.55 },
-  { id: 14, title: "US-Mexico Border Crisis",             location: "US–Mexico Border", date: "2026-03-10", severity: 2, lat: 28.93,   lon: -107.61 },
+// Fallback mock data in case API is unreachable
+const FALLBACK_CONFLICTS = [
+  { id: 1, title: "Ukraine Conflict Escalation", location: "Kyiv, Ukraine", date: "2025-03-10", severity: 5, lat: 48.38, lon: 31.17 },
+  { id: 2, title: "Red Sea Shipping Tensions", location: "Yemen", date: "2025-03-09", severity: 4, lat: 15.55, lon: 48.52 },
+  { id: 3, title: "Sudan Civil Unrest", location: "Khartoum, Sudan", date: "2025-03-08", severity: 5, lat: 12.86, lon: 30.22 },
+  { id: 4, title: "Taiwan Strait Incursions", location: "Taiwan Strait", date: "2025-03-12", severity: 3, lat: 23.69, lon: 120.96 },
+  { id: 5, title: "Eastern DRC Clashes", location: "DR Congo", date: "2025-03-07", severity: 4, lat: -4.03, lon: 21.75 }
 ];
 
+// Map API severity strings to numeric values for the frontend
+const severityToNumber = (sev) => {
+  switch (sev) {
+    case 'critical': return 5;
+    case 'high': return 4;
+    case 'medium': return 3;
+    case 'low': return 2;
+    default: return 3;
+  }
+};
+
+// Transform backend event shape to frontend shape
+const transformEvent = (evt) => ({
+  id: evt.id,
+  title: evt.title,
+  location: evt.country,
+  date: evt.date ? evt.date.split('T')[0] : '',
+  severity: severityToNumber(evt.severity),
+  lat: evt.latitude,
+  lon: evt.longitude,
+  casualties: evt.casualties,
+  displaced: evt.displaced,
+  description: evt.description,
+  region: evt.region,
+});
+
 const Dashboard = () => {
+  const [conflicts, setConflicts] = useState(FALLBACK_CONFLICTS);
   const [selectedEvent, setSelectedEvent] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  const fetchEvents = useCallback(async () => {
+    try {
+      const res = await eventsAPI.getAll(50);
+      const data = res.data;
+      const events = data?.data?.events || data?.events || [];
+      if (events.length > 0) {
+        setConflicts(events.map(transformEvent));
+      }
+    } catch (err) {
+      console.warn('[Dashboard] Using fallback data:', err.message);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchEvents();
+    // Auto-refresh every 5 minutes
+    const interval = setInterval(fetchEvents, 5 * 60 * 1000);
+    return () => clearInterval(interval);
+  }, [fetchEvents]);
 
   const handleEventClick = (event) => {
     setSelectedEvent(event);
   };
 
   return (
-    <div className="flex h-[calc(100vh-65px)] w-full overflow-hidden bg-base relative">
+    <div className="flex h-[calc(100vh-48px)] w-full overflow-hidden bg-base relative">
       
-      {/* Left Sidebar: Active Conflicts */}
-      <Sidebar conflicts={mockConflicts} />
+      {/* Left Sidebar: Active Conflicts Feed */}
+      <Sidebar
+        conflicts={conflicts}
+        onConflictClick={handleEventClick}
+        selectedId={selectedEvent?.id}
+      />
       
-      {/* Center Panel: Map Area */}
-      <MapPanel events={mockConflicts} onEventClick={handleEventClick} />
+      {/* Center: World Map (primary focus) */}
+      <MapPanel events={conflicts} onEventClick={handleEventClick} />
       
-      {/* Right Sidebar: Intelligence Narratives & Trends */}
+      {/* Right Sidebar: Intelligence + Markets */}
       <InsightsPanel />
       
-      {/* Absolute slide-in Panel overlay rendered exactly upon selecting event */}
+      {/* Deep dive overlay */}
       {selectedEvent && (
         <EventDeepDive 
           event={selectedEvent} 
           onClose={() => setSelectedEvent(null)} 
         />
       )}
-      
     </div>
   );
 };

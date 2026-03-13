@@ -3,7 +3,172 @@
 @tailwind utilities;
 
 @layer base {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #21262D #0D1117;
+  }
+  *::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  *::-webkit-scrollbar-track {
+    background: #0D1117;
+  }
+  *::-webkit-scrollbar-thumb {
+    background: #21262D;
+    border-radius: 3px;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background: #30363D;
+  }
+
   body {
     @apply bg-base text-primary font-sans antialiased;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   }
+
+  #root {
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: left;
+  }
+}
+
+/* Pulsing radar marker animation for map */
+@keyframes radar-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.8;
+  }
+  50% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
+
+@keyframes radar-ping {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3);
+    opacity: 0;
+  }
+}
+
+.radar-marker {
+  position: relative;
+}
+.radar-marker::before,
+.radar-marker::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  pointer-events: none;
+}
+.radar-marker::before {
+  width: 200%;
+  height: 200%;
+  animation: radar-pulse 2s ease-out infinite;
+}
+.radar-marker::after {
+  width: 300%;
+  height: 300%;
+  animation: radar-ping 3s ease-out infinite 0.5s;
+}
+
+/* Risk bar segments */
+.risk-bar {
+  display: flex;
+  gap: 2px;
+  height: 8px;
+}
+.risk-segment {
+  flex: 1;
+  border-radius: 2px;
+  transition: all 0.3s ease;
+}
+
+/* Intel feed scan line effect */
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* Leaflet overrides for dark intelligence theme */
+.leaflet-container {
+  font-family: 'Inter', system-ui, sans-serif !important;
+  background: #0D1117 !important;
+}
+.leaflet-popup-content-wrapper,
+.leaflet-popup-tip {
+  background-color: #161B22 !important;
+  color: #E6EDF3 !important;
+  border: 1px solid #21262D !important;
+  border-radius: 8px !important;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5) !important;
+}
+.leaflet-popup-content {
+  margin: 10px 14px !important;
+  min-width: 180px !important;
+  font-size: 13px !important;
+}
+.leaflet-popup-close-button {
+  color: #8B949E !important;
+}
+.leaflet-popup-close-button:hover {
+  color: #E6EDF3 !important;
+}
+.leaflet-control-attribution {
+  background: rgba(13, 17, 23, 0.9) !important;
+  color: #484F58 !important;
+  font-size: 10px !important;
+  border: none !important;
+}
+.leaflet-control-attribution a {
+  color: #58A6FF !important;
+}
+.leaflet-control-zoom a {
+  background-color: #161B22 !important;
+  color: #E6EDF3 !important;
+  border-color: #21262D !important;
+}
+.leaflet-control-zoom a:hover {
+  background-color: #21262D !important;
+}
+
+/* Markdown from AI chat */
+.markdown-body {
+  color: #E6EDF3;
+  line-height: 1.6;
+}
+.markdown-body p {
+  margin-bottom: 0.5em;
+}
+.markdown-body strong {
+  color: #E6EDF3;
+  font-weight: 600;
+}
+.markdown-body code {
+  background: #21262D;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.85em;
+}
+.markdown-body ul, .markdown-body ol {
+  padding-left: 1.25em;
+  margin-bottom: 0.5em;
+}
+.markdown-body li {
+  margin-bottom: 0.25em;
 }

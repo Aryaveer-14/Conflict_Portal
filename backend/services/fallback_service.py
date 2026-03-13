@@ -48,6 +48,11 @@ FALLBACK_RESPONSES = {
             "freight and insurance costs."
         ),
         "confidence": "HIGH",
+        "follow_ups": [
+            "Which regions are most exposed to this oil shock?",
+            "How could this impact inflation in the next 30 days?",
+            "What contingency actions should import-dependent countries take?",
+        ],
         "context_used": {"fallback": True},
     },
     "trade": {
@@ -80,6 +85,11 @@ FALLBACK_RESPONSES = {
             "of the underlying conflicts is anticipated within this window."
         ),
         "confidence": "MEDIUM",
+        "follow_ups": [
+            "Which trade corridors face the highest near-term risk?",
+            "What sectors are most vulnerable to shipping delays?",
+            "How might freight costs evolve over the next month?",
+        ],
         "context_used": {"fallback": True},
     },
     "default": {
@@ -113,6 +123,11 @@ FALLBACK_RESPONSES = {
             "appeals for 2026 are likely to set new records."
         ),
         "confidence": "MEDIUM",
+        "follow_ups": [
+            "Which conflict should we monitor most closely this week?",
+            "What are the most likely commodity-side spillovers?",
+            "Where is escalation risk highest in the next 30 days?",
+        ],
         "context_used": {"fallback": True},
     },
 }
@@ -134,7 +149,7 @@ def get_fallback(query: str) -> dict:
         query: The user's original question string.
 
     Returns:
-        dict with "response" (str) and "context_used" (dict) keys.
+        dict with "response", "confidence", "follow_ups", and "context_used" keys.
     """
     q = query.lower()
 

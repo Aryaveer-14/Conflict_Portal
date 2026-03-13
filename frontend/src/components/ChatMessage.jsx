@@ -4,22 +4,22 @@ const ChatMessage = ({ role, content }) => {
   const isUser = role === 'user';
   
   return (
-    <div className={`flex gap-4 w-full animate-in fade-in duration-300 ${isUser ? 'flex-row-reverse' : ''}`}>
+    <div className={`flex gap-3 w-full ${isUser ? 'flex-row-reverse' : ''}`}>
       {/* Avatar */}
-      <div className={`flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm ${
+      <div className={`flex-shrink-0 w-8 h-8 rounded flex items-center justify-center border ${
         isUser 
-          ? 'bg-black border-accent-green/30 text-accent-green shadow-[0_4px_15px_-5px_rgba(0,255,65,0.2)]' 
-          : 'bg-black border-accent-green/20 text-accent-green'
+          ? 'bg-accent-blue border-accent-blue/30 text-white' 
+          : 'bg-surface border-hover text-accent-blue'
       }`}>
-        {isUser ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5" />}
+        {isUser ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
       </div>
       
       {/* Message Bubble */}
-      <div className={`max-w-[85%] md:max-w-[75%] flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
-        <div className={`p-4 rounded-2xl shadow-sm leading-relaxed text-sm md:text-base ${
+      <div className={`max-w-[80%] flex flex-col ${isUser ? 'items-end' : 'items-start'}`}>
+        <div className={`px-3 py-2.5 rounded text-[13px] leading-relaxed ${
           isUser 
-            ? 'bg-black text-accent-green rounded-tr-sm border border-accent-green/30' 
-            : 'bg-black text-accent-green border border-accent-green/20 rounded-tl-sm shadow-md'
+            ? 'bg-accent-blue/15 text-primary border border-accent-blue/20' 
+            : 'bg-surface text-primary/90 border border-hover'
         }`}>
           {content}
         </div>

@@ -13,6 +13,7 @@ Member C — AI/ML Lead and Integration Architect
 from datetime import datetime, timezone
 import asyncio
 import re
+from typing import Any, Dict, Optional, Union
 
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -29,7 +30,7 @@ router = APIRouter()
 class AgentQuery(BaseModel):
     """Incoming user question with optional context."""
     query: str
-    context: dict = {}
+    context: Union[Dict[str, Any], str, None] = None
 
 
 # ── System Prompt ──────────────────────────────────────────────────────────────
@@ -48,6 +49,12 @@ When answering:
 At the end of the response include a confidence level (HIGH, MEDIUM, or LOW) based on data certainty.
 Format it exactly as: CONFIDENCE: HIGH (or MEDIUM or LOW)
 
+At the very end include exactly 3 follow-up questions in this exact format:
+FOLLOW_UPS:
+1. <question>
+2. <question>
+3. <question>
+
 Tone: analytical, neutral, evidence-based."""
 
 SOURCES = ["conflict_events", "commodity_prices", "news_narratives"]
@@ -61,6 +68,23 @@ def _extract_confidence(text: str) -> tuple[str, str]:
         cleaned = text[: match.start()].rstrip()
         return cleaned, confidence
     return text, "MEDIUM"
+
+
+def _extract_follow_ups(text: str) -> tuple[str, list[str]]:
+    """Extract follow-up questions from the AI response and return (cleaned_text, follow_ups)."""
+    match = re.search(r"FOLLOW_UPS:\s*(.*)$", text, re.IGNORECASE | re.DOTALL)
+    if not match:
+        return text, []
+
+    section = match.group(1)
+    follow_ups = [
+        item.strip()
+        for item in re.findall(r"(?:^|\n)\s*\d+\.\s*(.+)", section)
+        if item.strip()
+    ]
+
+    cleaned = text[: match.start()].rstrip()
+    return cleaned, follow_ups[:3]
 
 
 # ── Endpoint: POST /agent ──────────────────────────────────────────────────────
@@ -88,15 +112,34 @@ async def query_agent(body: AgentQuery) -> dict:
         }
     """
 
+    raw_context = body.context if body.context is not None else {}
+    if not isinstance(raw_context, dict):
+        raw_context = {}
+
+    detail_level = str(raw_context.get("detail_level", "detailed")).strip().lower()
+    if detail_level not in ("short", "detailed"):
+        detail_level = "detailed"
+
+    response_length_instruction = (
+        "Keep the answer concise in 4-6 short bullets."
+        if detail_level == "short"
+        else "Provide a detailed multi-section analysis."
+    )
+
     # Combine the system prompt with the user's question
-    prompt = f"{SYSTEM_PROMPT}\n\nUser question: {body.query}"
+    prompt = (
+        f"{SYSTEM_PROMPT}\n"
+        f"\nResponse length mode: {detail_level.upper()}"
+        f"\nLength rule: {response_length_instruction}"
+        f"\n\nUser question: {body.query}"
+    )
 
     try:
         # Run the synchronous Gemini call in a thread pool
         # so we don't block the FastAPI event loop
         raw_response = await asyncio.to_thread(ask_gemini, prompt)
-        ai_response, confidence = _extract_confidence(raw_response)
-        context_used = {"model": "gemini"}
+        text_without_follow_ups, follow_ups = _extract_follow_ups(raw_response)
+        ai_response, confidence = _extract_confidence(text_without_follow_ups)
 
     except Exception as e:
         # Gemini failed — use the keyword-matched fallback response
@@ -105,7 +148,7 @@ async def query_agent(body: AgentQuery) -> dict:
         fallback = get_fallback(body.query)
         ai_response = fallback["response"]
         confidence = fallback["confidence"]
-        context_used = fallback["context_used"]
+        follow_ups = fallback.get("follow_ups", [])
 
     # Return structured JSON response
     return {
@@ -114,6 +157,8 @@ async def query_agent(body: AgentQuery) -> dict:
             "response": ai_response,
             "confidence": confidence,
             "sources": SOURCES,
+            "follow_ups": follow_ups,
+            "detail_level": detail_level,
         },
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "source": "GCIP-Agent",

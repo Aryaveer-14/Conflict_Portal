@@ -46,9 +46,7 @@ const ScenarioSimulator = () => {
     setLoading(true);
     setResults(null);
     
-    // Simulating API call since backend is not ready
     setTimeout(() => {
-      // Mock data adjusted vaguely by severity for visualization purposes
       const baseData = MOCK_RESULTS[scenarioType] || MOCK_RESULTS['strait_blockade'];
       const scaledData = baseData.map(item => ({
         day: item.day,
@@ -61,42 +59,42 @@ const ScenarioSimulator = () => {
   };
 
   return (
-    <div className="flex flex-col lg:flex-row h-full w-full gap-6 max-w-7xl mx-auto animate-in fade-in duration-500">
+    <div className="flex flex-col lg:flex-row h-full w-full gap-4 max-w-7xl mx-auto">
       
-      {/* 🔴 Left Panel: Control Panel (~40%) */}
-      <div className="w-full lg:w-[40%] bg-surface border border-hover rounded-2xl p-6 shadow-xl flex flex-col h-fit">
-        <div className="flex items-center gap-3 mb-6 pb-4 border-b border-hover">
-          <div className="p-2 bg-accent-red/10 rounded-xl border border-accent-red/20 shadow-inner">
-            <AlertTriangle className="w-6 h-6 text-accent-red" />
+      {/* Control Panel */}
+      <div className="w-full lg:w-[38%] bg-surface/80 backdrop-blur-sm border border-hover/40 rounded p-5 flex flex-col h-fit">
+        <div className="flex items-center gap-2.5 mb-5 pb-3 border-b border-hover/40">
+          <div className="p-1.5 bg-accent-red/10 rounded border border-accent-red/20">
+            <AlertTriangle className="w-4 h-4 text-accent-red" />
           </div>
-          <h2 className="text-xl font-bold tracking-tight text-primary">Run a Simulation</h2>
+          <div>
+            <h2 className="text-sm font-bold tracking-tight text-primary">Run Simulation</h2>
+            <span className="text-[9px] font-mono text-muted tracking-wider">MONTE CARLO ENGINE</span>
+          </div>
         </div>
 
-        <div className="space-y-6">
-          {/* Crisis Type Dropdown */}
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-primary tracking-wide">Crisis Type</label>
-            <div className="relative">
-              <select
-                value={scenarioType}
-                onChange={(e) => setScenarioType(e.target.value)}
-                className="w-full bg-base border border-hover text-primary rounded-xl px-4 py-3 appearance-none focus:outline-none focus:border-accent-green/50 focus:ring-1 focus:ring-accent-green/50 transition-all font-medium text-sm"
-              >
-                {CRISIS_OPTIONS.map(opt => (
-                  <option key={opt.value} value={opt.value}>{opt.label}</option>
-                ))}
-              </select>
-              <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-muted">
-                ▼
-              </div>
-            </div>
+        <div className="space-y-5">
+          {/* Crisis Type */}
+          <div className="space-y-1.5">
+            <label className="text-[10px] font-mono font-bold text-muted uppercase tracking-widest">Crisis Type</label>
+            <select
+              value={scenarioType}
+              onChange={(e) => setScenarioType(e.target.value)}
+              className="w-full bg-base border border-hover text-primary rounded px-3 py-2.5 appearance-none focus:outline-none focus:border-accent-blue/40 transition-all font-mono text-xs"
+            >
+              {CRISIS_OPTIONS.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
           </div>
 
-          {/* Severity Slider */}
-          <div className="space-y-4">
+          {/* Severity */}
+          <div className="space-y-2">
             <div className="flex justify-between items-center">
-              <label className="text-sm font-semibold text-primary tracking-wide">Severity Level</label>
-              <span className="text-lg font-black text-accent-red tracking-tighter shadow-sm">{severity}<span className="text-muted text-sm font-medium">/5</span></span>
+              <label className="text-[10px] font-mono font-bold text-muted uppercase tracking-widest">Severity</label>
+              <span className="text-sm font-mono font-black text-accent-red">
+                {severity}<span className="text-muted text-xs font-medium">/5</span>
+              </span>
             </div>
             <input
               type="range"
@@ -105,9 +103,9 @@ const ScenarioSimulator = () => {
               step="1"
               value={severity}
               onChange={(e) => setSeverity(parseInt(e.target.value))}
-              className="w-full h-2 bg-base rounded-lg appearance-none cursor-pointer accent-accent-red outline-none border border-hover"
+              className="w-full h-1.5 bg-base rounded appearance-none cursor-pointer accent-accent-red outline-none border border-hover"
             />
-            <div className="flex justify-between text-xs font-bold uppercase tracking-widest text-muted">
+            <div className="flex justify-between text-[9px] font-mono font-bold uppercase tracking-widest text-muted">
               <span>Minimal</span>
               <span>Catastrophic</span>
             </div>
@@ -116,53 +114,60 @@ const ScenarioSimulator = () => {
           <button
             onClick={handleRunSimulation}
             disabled={loading}
-            className="w-full !mt-8 py-3.5 px-4 bg-accent-red hover:bg-[#ff5577] text-white rounded-xl font-bold transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(233,69,96,0.2)] hover:shadow-[0_0_25px_rgba(233,69,96,0.4)] disabled:opacity-50 disabled:cursor-not-allowed group"
+            className="w-full mt-4 py-3 px-4 bg-accent-red hover:bg-accent-red/90 text-white rounded font-mono font-bold text-xs tracking-wider transition-all flex items-center justify-center gap-2 shadow-[0_0_15px_rgba(255,77,77,0.15)] hover:shadow-[0_0_20px_rgba(255,77,77,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {loading ? (
               <>
-                <Loader2 className="w-5 h-5 animate-spin" />
-                Initializing Models...
+                <Loader2 className="w-4 h-4 animate-spin" />
+                INITIALIZING...
               </>
             ) : (
               <>
-                <Play className="w-5 h-5 fill-current" />
-                Run Simulation
+                <Play className="w-4 h-4 fill-current" />
+                EXECUTE SIMULATION
               </>
             )}
           </button>
         </div>
       </div>
 
-      {/* 🔵 Right Panel: Simulation Results (~60%) */}
-      <div className="flex-1 bg-surface border border-hover rounded-2xl p-6 shadow-xl flex flex-col min-h-[400px]">
-        <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
-          Simulation Results Timeline
-          {results && <span className="text-xs font-semibold tracking-wider uppercase bg-accent-green/10 text-accent-green border border-accent-green/20 px-2 py-0.5 rounded-full ml-auto">Data Generated</span>}
-        </h3>
+      {/* Results Panel */}
+      <div className="flex-1 bg-surface/80 backdrop-blur-sm border border-hover/40 rounded p-5 flex flex-col min-h-[400px]">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="text-xs font-mono font-bold text-primary tracking-wider uppercase">
+            Simulation Output
+          </h3>
+          {results && (
+            <span className="text-[9px] font-mono font-bold tracking-widest bg-accent-blue/10 text-accent-blue border border-accent-blue/20 px-1.5 py-0.5 rounded">
+              DATA READY
+            </span>
+          )}
+        </div>
         
-        <div className="flex-1 w-full bg-base border border-hover rounded-xl p-4 flex items-center justify-center shadow-inner relative">
-          
+        <div className="flex-1 w-full bg-base/60 border border-hover/40 rounded p-4 flex items-center justify-center">
           {loading ? (
-            <div className="flex flex-col items-center justify-center text-muted gap-4">
-              <Loader2 className="w-8 h-8 animate-spin text-accent-red" />
-              <p className="text-sm font-bold uppercase tracking-wider animate-pulse">Running Monte Carlo simulation...</p>
+            <div className="flex flex-col items-center justify-center text-muted gap-3">
+              <Loader2 className="w-6 h-6 animate-spin text-accent-red" />
+              <p className="text-[10px] font-mono font-bold uppercase tracking-widest animate-pulse">
+                Running Monte Carlo simulation...
+              </p>
             </div>
           ) : results ? (
-            <div className="w-full h-full min-h-[300px] animate-in slide-in-from-right-8 duration-500">
+            <div className="w-full h-full min-h-[300px]">
                <SimulationChart data={results} />
             </div>
           ) : (
             <div className="text-center text-muted max-w-sm">
-              <div className="w-16 h-16 bg-hover/50 rounded-full flex items-center justify-center mx-auto mb-4 border border-hover">
-                <AlertTriangle className="w-8 h-8 text-muted/50" />
+              <div className="w-12 h-12 bg-hover/30 rounded flex items-center justify-center mx-auto mb-3 border border-hover">
+                <AlertTriangle className="w-6 h-6 text-muted/40" />
               </div>
-              <p className="text-sm leading-relaxed">Configure parameters and run the simulation to generate predictive impact analytics.</p>
+              <p className="text-[11px] font-mono leading-relaxed tracking-wide">
+                Configure parameters and execute to generate predictive analytics.
+              </p>
             </div>
           )}
-          
         </div>
       </div>
-      
     </div>
   );
 };
