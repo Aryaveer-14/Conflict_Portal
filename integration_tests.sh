@@ -7,6 +7,8 @@ set -e
 
 BASE_URL="${1:-http://localhost:8000/api}"
 FRONTEND_URL="${2:-http://localhost:5173}"
+# Root server URL (without /api prefix) used for documentation endpoints
+ROOT_URL="${BASE_URL%/api}"
 
 echo "🧪 GCIP Integration Test Suite"
 echo "====================================="
@@ -129,8 +131,12 @@ test_endpoint "Get Cached Impact" "GET" "/impact/event/evt_001" "" "200"
 
 echo "📋 7. API Documentation"
 echo "---"
-test_endpoint "OpenAPI Docs" "GET" "/../docs" "" "200"
-test_endpoint "ReDoc Docs" "GET" "/../redoc" "" "200"
+curl -s -o /dev/null -w "%{http_code}" "$ROOT_URL/docs" | grep -q "200" \
+    && { echo -e "Testing OpenAPI Docs... ${GREEN}✓ PASS${NC} (HTTP 200)"; TESTS_PASSED=$((TESTS_PASSED + 1)); } \
+    || { echo -e "Testing OpenAPI Docs... ${RED}✗ FAIL${NC}"; TESTS_FAILED=$((TESTS_FAILED + 1)); }
+curl -s -o /dev/null -w "%{http_code}" "$ROOT_URL/redoc" | grep -q "200" \
+    && { echo -e "Testing ReDoc Docs... ${GREEN}✓ PASS${NC} (HTTP 200)"; TESTS_PASSED=$((TESTS_PASSED + 1)); } \
+    || { echo -e "Testing ReDoc Docs... ${RED}✗ FAIL${NC}"; TESTS_FAILED=$((TESTS_FAILED + 1)); }
 
 # ── Results ────────────────────────────────────────────────────────────────────
 
