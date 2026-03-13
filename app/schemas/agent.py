@@ -8,7 +8,7 @@ from typing import Optional
 
 
 class AgentQuery(BaseModel):
-    query: str = Field(..., description="Natural-language question from the user")
+    query: str = Field(..., min_length=3, description="Natural-language question from the user")
     context: dict = Field(
         default_factory=dict,
         description="Additional context (event_id, region, etc.)",
