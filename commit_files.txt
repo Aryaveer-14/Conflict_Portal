@@ -1,0 +1,42 @@
+﻿commit c8ecfebba98188297d078bbecbdc48b3856c4fcc
+Author: Dishita Vaswani <dishitavaswani0909@gmail.com>
+Date:   Thu Mar 12 22:54:14 2026 +0530
+
+    feat: AI enhancements - streaming responses, confidence levels, source context
+    
+    - Backend: Updated /agent endpoint with confidence (HIGH/MEDIUM/LOW) and sources array
+    - Backend: Added confidence extraction from Gemini response text
+    - Backend: Fallback responses now include confidence levels
+    - Frontend: Created AIChat.jsx component with streaming typing effect
+    - Frontend: Confidence indicator with color-coded badges (green/yellow/red)
+    - Frontend: Sources panel displaying data sources used in analysis
+    - Docker: Full containerized setup with backend (FastAPI) and frontend (React/Vite)
+    
+    Member C - AI/ML Lead and Integration Architect
+
+backend/.env.example
+backend/Dockerfile
+backend/main.py
+backend/requirements.txt
+backend/routers/__init__.py
+backend/routers/agent.py
+backend/routers/commodities.py
+backend/routers/events.py
+backend/routers/impact.py
+backend/routers/narratives.py
+backend/services/__init__.py
+backend/services/fallback_service.py
+backend/services/gemini_service.py
+backend/services/narrative_service.py
+docker-compose.yml
+frontend/.env.example
+frontend/Dockerfile
+frontend/index.html
+frontend/package.json
+frontend/src/App.jsx
+frontend/src/api/client.js
+frontend/src/components/AIChat.jsx
+frontend/src/hooks/useConflictData.js
+frontend/src/index.css
+frontend/src/main.jsx
+frontend/vite.config.js

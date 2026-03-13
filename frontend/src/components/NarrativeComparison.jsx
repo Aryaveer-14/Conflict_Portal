@@ -21,9 +21,9 @@ const NarrativeComparison = () => {
           </div>
           
           {/* Measured Reality */}
-          <div className="flex-1 p-4 bg-accent-blue/5">
+          <div className="flex-1 p-4 bg-accent-green/5">
             <div className="flex items-center gap-2 mb-2">
-              <CheckCircle2 className="w-4 h-4 text-accent-blue" />
+              <CheckCircle2 className="w-4 h-4 text-accent-green" />
               <h4 className="text-sm font-semibold text-primary">Measured Reality</h4>
             </div>
             <p className="text-xs text-primary leading-relaxed">

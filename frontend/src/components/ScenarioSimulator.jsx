@@ -80,7 +80,7 @@ const ScenarioSimulator = () => {
               <select
                 value={scenarioType}
                 onChange={(e) => setScenarioType(e.target.value)}
-                className="w-full bg-base border border-hover text-primary rounded-xl px-4 py-3 appearance-none focus:outline-none focus:border-accent-blue/50 focus:ring-1 focus:ring-accent-blue/50 transition-all font-medium text-sm"
+                className="w-full bg-base border border-hover text-primary rounded-xl px-4 py-3 appearance-none focus:outline-none focus:border-accent-green/50 focus:ring-1 focus:ring-accent-green/50 transition-all font-medium text-sm"
               >
                 {CRISIS_OPTIONS.map(opt => (
                   <option key={opt.value} value={opt.value}>{opt.label}</option>
@@ -137,7 +137,7 @@ const ScenarioSimulator = () => {
       <div className="flex-1 bg-surface border border-hover rounded-2xl p-6 shadow-xl flex flex-col min-h-[400px]">
         <h3 className="text-lg font-bold text-primary mb-6 flex items-center gap-2">
           Simulation Results Timeline
-          {results && <span className="text-xs font-semibold tracking-wider uppercase bg-accent-blue/10 text-accent-blue border border-accent-blue/20 px-2 py-0.5 rounded-full ml-auto">Data Generated</span>}
+          {results && <span className="text-xs font-semibold tracking-wider uppercase bg-accent-green/10 text-accent-green border border-accent-green/20 px-2 py-0.5 rounded-full ml-auto">Data Generated</span>}
         </h3>
         
         <div className="flex-1 w-full bg-base border border-hover rounded-xl p-4 flex items-center justify-center shadow-inner relative">

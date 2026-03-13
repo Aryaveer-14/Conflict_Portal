@@ -8,13 +8,13 @@ const InsightsPanel = () => {
       {/* Section 1: Top Narratives */}
       <div className="p-4 border-b border-hover">
         <div className="flex items-center gap-2 mb-4">
-          <FileText className="w-4 h-4 text-accent-blue" />
+          <FileText className="w-4 h-4 text-accent-green" />
           <h2 className="font-bold text-primary text-sm tracking-wide uppercase">Top Narratives</h2>
         </div>
         
         <div className="space-y-3">
           {/* Placeholder Narrative Card */}
-          <div className="bg-base p-3.5 rounded-xl border border-hover hover:border-accent-blue/30 transition-colors">
+          <div className="bg-base p-3.5 rounded-xl border border-hover hover:border-accent-green/30 transition-colors">
             <div className="flex items-center gap-2 mb-2">
               <Radio className="w-3 h-3 text-accent-red animate-pulse" />
               <span className="text-[10px] text-muted font-bold uppercase tracking-wider">Intercepted</span>
@@ -27,7 +27,7 @@ const InsightsPanel = () => {
             </div>
           </div>
 
-          <div className="bg-base p-3.5 rounded-xl border border-hover hover:border-accent-blue/30 transition-colors">
+          <div className="bg-base p-3.5 rounded-xl border border-hover hover:border-accent-green/30 transition-colors">
             <div className="flex items-center gap-2 mb-2">
               <Radio className="w-3 h-3 text-accent-orange" />
               <span className="text-[10px] text-muted font-bold uppercase tracking-wider">Analysis</span>

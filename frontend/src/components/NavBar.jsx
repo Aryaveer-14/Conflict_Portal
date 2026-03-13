@@ -1,5 +1,5 @@
 import { Link, useLocation } from 'react-router-dom';
-import { Activity, MessageSquare, Globe, Menu } from 'lucide-react';
+import { Activity, MessageSquare, Globe, Menu, Newspaper } from 'lucide-react';
 import { useState } from 'react';
 
 const NavBar = () => {
@@ -7,7 +7,8 @@ const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   const links = [
-    { name: 'Dashboard', path: '/', icon: <Activity className="w-5 h-5" /> },
+    { name: 'Home', path: '/dashboard', icon: <Activity className="w-5 h-5" /> },
+    { name: 'News', path: '/news', icon: <Newspaper className="w-5 h-5" /> },
     { name: 'Chat', path: '/chat', icon: <MessageSquare className="w-5 h-5" /> },
     { name: 'Simulator', path: '/simulator', icon: <Globe className="w-5 h-5" /> },
   ];
@@ -16,9 +17,9 @@ const NavBar = () => {
     <nav className="bg-surface border-b border-hover px-4 py-3 sticky top-0 z-50">
       <div className="max-w-7xl mx-auto flex justify-between items-center relative">
         {/* Logo */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <div className="w-8 h-8 rounded-lg bg-accent-blue/10 flex items-center justify-center border border-accent-blue/30 group-hover:bg-accent-blue/20 transition-colors">
-            <Globe className="w-5 h-5 text-accent-blue" />
+        <Link to="/dashboard" className="flex items-center gap-2 group">
+          <div className="w-8 h-8 rounded-lg bg-accent-green/10 flex items-center justify-center border border-accent-green/30 group-hover:bg-accent-green/20 transition-colors">
+            <Globe className="w-5 h-5 text-accent-green" />
           </div>
           <span className="font-bold text-xl tracking-wide bg-gradient-to-r from-primary to-muted bg-clip-text text-transparent">
             GCIP Platform
@@ -35,7 +36,7 @@ const NavBar = () => {
                 to={link.path}
                 className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all duration-200 ${
                   isActive
-                    ? 'bg-accent-blue/10 text-accent-blue'
+                    ? 'bg-accent-green/10 text-accent-green'
                     : 'text-muted hover:text-primary hover:bg-hover'
                 }`}
               >
@@ -44,6 +45,12 @@ const NavBar = () => {
               </Link>
             );
           })}
+          <Link
+            to="/"
+            className="flex items-center justify-center px-4 py-2 bg-accent-green/10 border border-accent-green/30 text-accent-green font-bold rounded-lg hover:bg-accent-green/20 transition-all uppercase tracking-widest"
+          >
+            GCIP
+          </Link>
         </div>
 
         {/* Mobile Menu Toggle */}
@@ -67,7 +74,7 @@ const NavBar = () => {
                 onClick={() => setIsOpen(false)}
                 className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all ${
                   isActive
-                    ? 'bg-accent-blue/10 text-accent-blue font-medium'
+                    ? 'bg-accent-green/10 text-accent-green font-medium'
                     : 'text-muted hover:bg-hover hover:text-primary'
                 }`}
               >
@@ -76,6 +83,13 @@ const NavBar = () => {
               </Link>
             );
           })}
+          <Link
+            to="/"
+            onClick={() => setIsOpen(false)}
+            className="flex items-center justify-center mt-2 px-4 py-3 bg-accent-green/10 border border-accent-green/30 text-accent-green font-bold rounded-xl hover:bg-accent-green/20 transition-all uppercase tracking-widest"
+          >
+            GCIP Landing Page
+          </Link>
         </div>
       )}
     </nav>

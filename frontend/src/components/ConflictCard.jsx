@@ -5,13 +5,13 @@ const ConflictCard = ({ conflict }) => {
   const getSeverityColor = (severity) => {
     if (severity >= 5) return 'bg-accent-red shadow-[0_0_8px_rgba(233,69,96,0.6)]';
     if (severity >= 4) return 'bg-accent-orange shadow-[0_0_8px_rgba(244,162,97,0.6)]';
-    return 'bg-accent-blue shadow-[0_0_8px_rgba(88,166,255,0.6)]';
+    return 'bg-accent-green shadow-[0_0_8px_rgba(0,255,65,0.6)]';
   };
 
   return (
-    <div className="bg-base border border-hover rounded-xl p-4 hover:border-accent-blue/30 transition-all cursor-pointer group shadow-sm hover:shadow-md">
+    <div className="bg-base border border-hover rounded-xl p-4 hover:border-accent-green/30 transition-all cursor-pointer group shadow-sm hover:shadow-md">
       <div className="flex items-start justify-between mb-3">
-        <h3 className="font-semibold text-sm text-primary group-hover:text-accent-blue transition-colors leading-tight pr-2">
+        <h3 className="font-semibold text-sm text-primary group-hover:text-accent-green transition-colors leading-tight pr-2">
           {conflict.title}
         </h3>
         <div className="flex-shrink-0 pt-1">

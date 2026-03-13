@@ -58,7 +58,7 @@ const EventDeepDive = ({ event, onClose }) => {
         {/* 🎯 Impact Radar Section */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <span className="w-2 h-2 rounded-full bg-accent-blue animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-accent-green animate-pulse" />
             <h3 className="text-sm font-bold text-primary tracking-widest uppercase">System Impact</h3>
           </div>
           <div className="bg-base border border-hover rounded-2xl p-4 shadow-inner">
@@ -72,11 +72,11 @@ const EventDeepDive = ({ event, onClose }) => {
         </div>
 
         {/* 🤖 AI Summary Card */}
-        <div className="bg-gradient-to-br from-[#1A1F2B] to-base border border-accent-blue/20 rounded-2xl p-5 relative overflow-hidden group shadow-[0_4px_20px_-5px_rgba(88,166,255,0.1)]">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-accent-blue/10 blur-[40px] rounded-full pointer-events-none" />
+        <div className="bg-gradient-to-br from-[#1A1F2B] to-base border border-accent-green/20 rounded-2xl p-5 relative overflow-hidden group shadow-[0_4px_20px_-5px_rgba(0,255,65,0.1)]">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-accent-green/10 blur-[40px] rounded-full pointer-events-none" />
           
           <div className="flex items-center gap-2 mb-3 relative z-10">
-            <BrainCircuit className="w-5 h-5 text-accent-blue" />
+            <BrainCircuit className="w-5 h-5 text-accent-green" />
             <h3 className="text-sm font-bold text-primary uppercase tracking-widest">AI Analysis</h3>
           </div>
           
@@ -84,7 +84,7 @@ const EventDeepDive = ({ event, onClose }) => {
             "This conflict is likely to increase oil price volatility in the short term but does not yet threaten global supply chains."
           </p>
           
-          <button className="w-full py-2.5 px-4 bg-accent-blue/10 hover:bg-accent-blue/20 text-accent-blue border border-accent-blue/30 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 relative z-10 shadow-inner group-hover:border-accent-blue/50">
+          <button className="w-full py-2.5 px-4 bg-accent-green/10 hover:bg-accent-green/20 text-accent-green border border-accent-green/30 rounded-xl text-sm font-bold transition-all flex items-center justify-center gap-2 relative z-10 shadow-inner group-hover:border-accent-green/50">
             <Sparkles className="w-4 h-4" />
             Explain This Simply
           </button>
