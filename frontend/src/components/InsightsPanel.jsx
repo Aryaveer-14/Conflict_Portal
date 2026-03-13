@@ -109,7 +109,7 @@ const InsightsPanel = () => {
         </div>
         
         <div className="flex-1 overflow-y-auto">
-          {narratives.map((item, idx) => (
+          {narratives.map((item) => (
             <div
               key={item.id}
               className="px-3 py-2.5 border-b border-hover/20 hover:bg-hover/20 transition-colors cursor-pointer group"
