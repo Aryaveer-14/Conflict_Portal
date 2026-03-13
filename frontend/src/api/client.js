@@ -176,3 +176,22 @@ export const impactAPI = {
   getImpact: (eventId, eventData) =>
     api.post("/impact/", { event_id: eventId, event_data: eventData }),
 };
+
+
+// ── News ───────────────────────────────────────────────────────────────────
+/**
+ * newsAPI
+ * -------
+ * Global conflict news intelligence.
+ */
+export const newsAPI = {
+  /**
+   * Search news articles by query.
+   * @param {string} q       - The keyword query (e.g., 'conflict impact').
+   * @param {number} limit   - Maximum results.
+   * @param {Object} axiosConfig - Additional axios configuration.
+   * @returns {Promise<AxiosResponse>}
+   */
+  search: (q = 'geopolitical conflict OR supply chain disruption', limit = 20, axiosConfig = {}) =>
+    api.get('/news/', { params: { q, limit }, ...axiosConfig }),
+};

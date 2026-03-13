@@ -1,0 +1,7 @@
+﻿frontend/index.html
+frontend/package.json
+frontend/src/App.jsx
+frontend/src/components/AIChat.jsx
+frontend/src/index.css
+frontend/src/main.jsx
+frontend/vite.config.js

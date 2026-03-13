@@ -1,0 +1,1082 @@
+﻿diff --cc frontend/index.html
+index f312836,c20fbd3..0000000
+--- a/frontend/index.html
++++ b/frontend/index.html
+@@@ -1,19 -1,10 +1,29 @@@
+++<<<<<<< HEAD
+ +<!DOCTYPE html>
+ +<html lang="en">
+ +  <head>
+ +    <meta charset="UTF-8" />
+ +    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ +    <meta
+ +      name="description"
+ +      content="Global Conflict Impact Intelligence Platform — AI-powered geopolitical analysis powered by Gemini."
+ +    />
+ +    <title>GCIP — Global Conflict Intelligence</title>
+ +    <link rel="preconnect" href="https://fonts.googleapis.com" />
+ +    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+ +    <link
+ +      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+ +      rel="stylesheet"
+ +    />
+++=======
++ <!doctype html>
++ <html lang="en">
++   <head>
++     <meta charset="UTF-8" />
++     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
++     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
++     <title>frontend</title>
+++>>>>>>> origin/feature/memberB-frontend
+    </head>
+    <body>
+      <div id="root"></div>
+diff --cc frontend/package.json
+index 1135b1a,2706ac8..0000000
+--- a/frontend/package.json
++++ b/frontend/package.json
+@@@ -1,23 -1,36 +1,58 @@@
+  {
+++<<<<<<< HEAD
+ +  "name": "gcip-frontend",
+ +  "private": true,
+ +  "version": "1.0.0",
+++=======
++   "name": "frontend",
++   "private": true,
++   "version": "0.0.0",
+++>>>>>>> origin/feature/memberB-frontend
+    "type": "module",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+++<<<<<<< HEAD
+ +    "preview": "vite preview"
+ +  },
+ +  "dependencies": {
+ +    "axios": "^1.6.8",
+ +    "react": "^18.3.1",
+ +    "react-dom": "^18.3.1",
+ +    "react-markdown": "^9.0.1"
+ +  },
+ +  "devDependencies": {
+ +    "@types/react": "^18.3.1",
+ +    "@types/react-dom": "^18.3.0",
+ +    "@vitejs/plugin-react": "^4.2.1",
+ +    "vite": "^5.2.0"
+++=======
++     "lint": "eslint .",
++     "preview": "vite preview"
++   },
++   "dependencies": {
++     "autoprefixer": "^10.4.27",
++     "axios": "^1.13.6",
++     "leaflet": "^1.9.4",
++     "lucide-react": "^0.577.0",
++     "postcss": "^8.5.8",
++     "react": "^19.2.0",
++     "react-dom": "^19.2.0",
++     "react-leaflet": "^5.0.0",
++     "react-router-dom": "^7.13.1",
++     "recharts": "^3.8.0",
++     "tailwindcss": "^3.4.19"
++   },
++   "devDependencies": {
++     "@eslint/js": "^9.39.1",
++     "@types/react": "^19.2.7",
++     "@types/react-dom": "^19.2.3",
++     "@vitejs/plugin-react": "^5.1.1",
++     "eslint": "^9.39.1",
++     "eslint-plugin-react-hooks": "^7.0.1",
++     "eslint-plugin-react-refresh": "^0.4.24",
++     "globals": "^16.5.0",
++     "vite": "^7.3.1"
+++>>>>>>> origin/feature/memberB-frontend
+    }
+  }
+diff --cc frontend/src/App.jsx
+index 26a9436,f20152d..0000000
+--- a/frontend/src/App.jsx
++++ b/frontend/src/App.jsx
+@@@ -1,115 -1,24 +1,142 @@@
+++<<<<<<< HEAD
+ +import { useState, useEffect } from "react";
+ +import ReactMarkdown from "react-markdown";
+ +import { eventsAPI, narrativesAPI } from "./api/client";
+ +import AIChat from "./components/AIChat";
+ +
+ +// ═══════════════════════════════════════════════════════════════════════════════
+ +// App — GCIP Dashboard
+ +// ═══════════════════════════════════════════════════════════════════════════════
+ +
+ +export default function App() {
+ +  // ── State ────────────────────────────────────────────────────────────────
+ +  const [events, setEvents] = useState([]);
+ +  const [selectedEvent, setSelectedEvent] = useState(null);
+ +  const [narratives, setNarratives] = useState([]);
+ +  const [narLoading, setNarLoading] = useState(false);
+ +  const [eventsLoading, setEventsLoading] = useState(true);
+ +
+ +  // ── Fetch events on mount ────────────────────────────────────────────────
+ +  useEffect(() => {
+ +    eventsAPI
+ +      .getAll()
+ +      .then((res) => setEvents(res.data?.data?.events ?? []))
+ +      .catch(() => setEvents([]))
+ +      .finally(() => setEventsLoading(false));
+ +  }, []);
+ +
+ +  // ── Fetch narratives when an event is selected ───────────────────────────
+ +  useEffect(() => {
+ +    if (!selectedEvent) {
+ +      setNarratives([]);
+ +      return;
+ +    }
+ +    setNarLoading(true);
+ +    narrativesAPI
+ +      .getNarratives(selectedEvent.id)
+ +      .then((res) => setNarratives(res.data?.data?.narratives ?? []))
+ +      .catch(() => setNarratives([]))
+ +      .finally(() => setNarLoading(false));
+ +  }, [selectedEvent]);
+ +
+ +  // ── Render ───────────────────────────────────────────────────────────────
+ +  return (
+ +    <div className="app">
+ +      {/* Header */}
+ +      <header className="header">
+ +        <h1>
+ +          <span>GCIP</span> — Global Conflict Intelligence
+ +        </h1>
+ +        <div className="header-status">
+ +          <span className={`status-dot ${eventsLoading ? "error" : ""}`} />
+ +          {eventsLoading ? "Connecting…" : `${events.length} events tracked`}
+ +        </div>
+ +      </header>
+ +
+ +      {/* Main grid */}
+ +      <main className="main">
+ +        {/* Left: Events list */}
+ +        <div className="card events-panel">
+ +          <div className="card-title">Conflict Events</div>
+ +          {eventsLoading ? (
+ +            <div className="loading">
+ +              <span className="spinner" /> Loading events…
+ +            </div>
+ +          ) : events.length === 0 ? (
+ +            <div className="empty">No events available</div>
+ +          ) : (
+ +            events.map((evt) => (
+ +              <div
+ +                key={evt.id}
+ +                className={`event-item ${selectedEvent?.id === evt.id ? "selected" : ""}`}
+ +                onClick={() => setSelectedEvent(evt)}
+ +              >
+ +                <div className="event-title">{evt.title}</div>
+ +                <div className="event-meta">
+ +                  <span>{evt.country}</span>
+ +                  <span>{evt.region}</span>
+ +                  <span className={`severity-badge ${evt.severity}`}>{evt.severity}</span>
+ +                </div>
+ +              </div>
+ +            ))
+ +          )}
+ +        </div>
+ +
+ +        {/* Top-right: Narratives for selected event */}
+ +        <div className="card">
+ +          <div className="card-title">
+ +            Narratives {selectedEvent ? `— ${selectedEvent.title}` : ""}
+ +          </div>
+ +          {!selectedEvent ? (
+ +            <div className="empty">Select an event to view narratives</div>
+ +          ) : narLoading ? (
+ +            <div className="loading">
+ +              <span className="spinner" /> Extracting narratives…
+ +            </div>
+ +          ) : narratives.length === 0 ? (
+ +            <div className="empty">No narratives extracted</div>
+ +          ) : (
+ +            narratives.map((n, i) => (
+ +              <div key={i} className="narrative-item">
+ +                <div className="narrative-label">{n.label}</div>
+ +                <div className="narrative-desc">{n.description}</div>
+ +                <div className="narrative-bar-bg">
+ +                  <div className="narrative-bar" style={{ width: `${n.prevalence_score}%` }} />
+ +                </div>
+ +              </div>
+ +            ))
+ +          )}
+ +        </div>
+ +
+ +        {/* Bottom-right: AI Agent Chat */}
+ +        <AIChat />
+ +      </main>
+ +    </div>
+ +  );
+ +}
+++=======
++ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
++ import NavBar from './components/NavBar';
++ import Dashboard from './pages/Dashboard';
++ import ChatPage from './pages/ChatPage';
++ import SimulatorPage from './pages/SimulatorPage';
++ 
++ function App() {
++   return (
++     <Router>
++       <div className="min-h-screen bg-base text-primary flex flex-col">
++         <NavBar />
++         <main className="flex-1 overflow-x-hidden overflow-y-auto">
++           <Routes>
++             <Route path="/" element={<Dashboard />} />
++             <Route path="/chat" element={<ChatPage />} />
++             <Route path="/simulator" element={<SimulatorPage />} />
++           </Routes>
++         </main>
++       </div>
++     </Router>
++   );
++ }
++ 
++ export default App;
+++>>>>>>> origin/feature/memberB-frontend
+diff --cc frontend/src/components/AIChat.jsx
+index 0d620ca,db35058..0000000
+--- a/frontend/src/components/AIChat.jsx
++++ b/frontend/src/components/AIChat.jsx
+@@@ -1,185 -1,158 +1,344 @@@
+++<<<<<<< HEAD
+ +import { useState, useCallback, useRef, useEffect } from "react";
+ +import ReactMarkdown from "react-markdown";
+ +import { agentAPI } from "../api/client";
+ +
+ +// ═══════════════════════════════════════════════════════════════════════════════
+ +// AIChat — Intelligence Agent with streaming, confidence & sources
+ +// ═══════════════════════════════════════════════════════════════════════════════
+ +
+ +const CONFIDENCE_COLORS = {
+ +  HIGH: "var(--success)",
+ +  MEDIUM: "var(--warning)",
+ +  LOW: "var(--danger)",
+ +};
+ +
+ +const SOURCE_LABELS = {
+ +  conflict_events: "Conflict Events",
+ +  commodity_prices: "Commodity Data",
+ +  news_narratives: "News Narratives",
+ +};
+ +
+ +export default function AIChat() {
+ +  const [messages, setMessages] = useState([]);
+ +  const [input, setInput] = useState("");
+ +  const [chatLoading, setChatLoading] = useState(false);
+ +  const [streamingIdx, setStreamingIdx] = useState(null);
+ +  const [displayedText, setDisplayedText] = useState("");
+ +  const intervalRef = useRef(null);
+ +  const messagesEndRef = useRef(null);
+ +
+ +  // Auto-scroll to bottom when messages change
+ +  useEffect(() => {
+ +    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+ +  }, [messages, displayedText]);
+ +
+ +  // Cleanup interval on unmount
+ +  useEffect(() => {
+ +    return () => {
+ +      if (intervalRef.current) clearInterval(intervalRef.current);
+ +    };
+ +  }, []);
+ +
+ +  function streamResponse(text, msgIndex) {
+ +    let i = 0;
+ +    setStreamingIdx(msgIndex);
+ +    setDisplayedText("");
+ +
+ +    intervalRef.current = setInterval(() => {
+ +      i++;
+ +      setDisplayedText(text.slice(0, i));
+ +
+ +      if (i >= text.length) {
+ +        clearInterval(intervalRef.current);
+ +        intervalRef.current = null;
+ +        setStreamingIdx(null);
+ +      }
+ +    }, 10);
+ +  }
+ +
+ +  const sendMessage = useCallback(async () => {
+ +    const q = input.trim();
+ +    if (!q || chatLoading) return;
+ +
+ +    // Stop any in-progress streaming
+ +    if (intervalRef.current) {
+ +      clearInterval(intervalRef.current);
+ +      intervalRef.current = null;
+ +      setStreamingIdx(null);
+ +    }
+ +
+ +    setMessages((prev) => [...prev, { role: "user", text: q }]);
+ +    setInput("");
+ +    setChatLoading(true);
+ +
+ +    try {
+ +      const res = await agentAPI.query(q, {});
+ +      const data = res.data?.data ?? {};
+ +      const aiText = data.response ?? "No response received.";
+ +      const confidence = data.confidence ?? null;
+ +      const sources = data.sources ?? [];
+ +
+ +      setMessages((prev) => {
+ +        const newMessages = [
+ +          ...prev,
+ +          { role: "ai", text: aiText, confidence, sources },
+ +        ];
+ +        // Start streaming the latest AI message
+ +        streamResponse(aiText, newMessages.length - 1);
+ +        return newMessages;
+ +      });
+ +    } catch {
+ +      setMessages((prev) => [
+ +        ...prev,
+ +        {
+ +          role: "ai",
+ +          text: "AI analysis temporarily unavailable. Please try again.",
+ +          confidence: null,
+ +          sources: [],
+ +        },
+ +      ]);
+ +    } finally {
+ +      setChatLoading(false);
+ +    }
+ +  }, [input, chatLoading]);
+ +
+ +  const handleKeyDown = (e) => {
+ +    if (e.key === "Enter" && !e.shiftKey) {
+ +      e.preventDefault();
+ +      sendMessage();
+++=======
++ import { useState, useRef, useEffect } from 'react';
++ import axios from 'axios';
++ import { Send, Bot, Loader2, Sparkles } from 'lucide-react';
++ import ChatMessage from './ChatMessage';
++ 
++ const EXAMPLE_QUERIES = [
++   "How could this conflict affect oil supply?",
++   "Are shipping routes disrupted?",
++   "Which sectors are at risk?",
++   "What's the 30-day outlook?"
++ ];
++ 
++ const AIChat = () => {
++   const [messages, setMessages] = useState([
++     { role: 'ai', content: 'Welcome to the GCIP Intelligence Chat. How can I assist your analysis today?' }
++   ]);
++   const [input, setInput] = useState('');
++   const [loading, setLoading] = useState(false);
++   const messagesEndRef = useRef(null);
++ 
++   const scrollToBottom = () => {
++     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
++   };
++ 
++   useEffect(() => {
++     scrollToBottom();
++   }, [messages, loading]);
++ 
++   const handleSend = async (queryText) => {
++     if (!queryText.trim() || loading) return;
++     
++     setInput('');
++     const userMsg = { role: 'user', content: queryText };
++     setMessages((prev) => [...prev, userMsg]);
++     setLoading(true);
++ 
++     try {
++       const response = await axios.post('/agent', { query: queryText });
++       
++       if (response.data && response.data.success) {
++         setMessages((prev) => [...prev, { role: 'ai', content: response.data.data.response }]);
++       } else {
++         setMessages((prev) => [...prev, { role: 'ai', content: "An error occurred while processing your request. Check your API payload logic." }]);
++       }
++     } catch (error) {
++       // Mock Response Fallback for Hackathon Demo UI without a backend
++       console.warn("Backend /agent call failed or not found, simulating response for demo purposes.");
++       
++       setTimeout(() => {
++         setMessages((prev) => [
++           ...prev, 
++           { 
++             role: 'ai', 
++             content: `Simulation: Based on recent intelligence, your query regarding "${queryText}" flags high volatility indicators. Global commodities are currently sensitive to rapid geopolitical shifts. Recommend monitoring daily trade routes.` 
++           }
++         ]);
++         setLoading(false);
++       }, 1500);
++       return;
++     }
++     
++     setLoading(false);
++   };
++ 
++   const handleKeyDown = (e) => {
++     if (e.key === 'Enter' && !e.shiftKey) {
++       e.preventDefault();
++       handleSend(input);
+++>>>>>>> origin/feature/memberB-frontend
+      }
+    };
+  
+    return (
+++<<<<<<< HEAD
+ +    <div className="card agent-panel">
+ +      <div className="card-title">GCIP Intelligence Agent</div>
+ +      <div className="chat-messages">
+ +        {messages.length === 0 && (
+ +          <div className="empty">
+ +            Ask a question about any global conflict…
+ +          </div>
+ +        )}
+ +        {messages.map((msg, i) => (
+ +          <div key={i} className={`chat-msg ${msg.role}`}>
+ +            {msg.role === "ai" ? (
+ +              <>
+ +                <ReactMarkdown>
+ +                  {streamingIdx === i ? displayedText : msg.text}
+ +                </ReactMarkdown>
+ +
+ +                {/* Confidence indicator — show after streaming completes or for older messages */}
+ +                {streamingIdx !== i && msg.confidence && (
+ +                  <div
+ +                    className="confidence-badge"
+ +                    style={{
+ +                      borderColor: CONFIDENCE_COLORS[msg.confidence],
+ +                      color: CONFIDENCE_COLORS[msg.confidence],
+ +                    }}
+ +                  >
+ +                    Confidence: {msg.confidence}
+ +                  </div>
+ +                )}
+ +
+ +                {/* Sources panel — show after streaming completes or for older messages */}
+ +                {streamingIdx !== i && msg.sources && msg.sources.length > 0 && (
+ +                  <div className="sources-panel">
+ +                    <div className="sources-title">Sources:</div>
+ +                    <ul className="sources-list">
+ +                      {msg.sources.map((src, j) => (
+ +                        <li key={j}>{SOURCE_LABELS[src] || src}</li>
+ +                      ))}
+ +                    </ul>
+ +                  </div>
+ +                )}
+ +              </>
+ +            ) : (
+ +              msg.text
+ +            )}
+ +          </div>
+ +        ))}
+ +        {chatLoading && (
+ +          <div className="chat-msg ai">
+ +            <span className="spinner" /> Analysing…
+++=======
++     <div className="flex flex-col h-full w-full max-w-5xl mx-auto shadow-2xl rounded-2xl overflow-hidden border border-hover bg-base z-0">
++       
++       {/* ⭐ Header Section */}
++       <div className="bg-surface border-b border-hover p-4 px-6 flex items-center justify-between shadow-sm z-10 shrink-0">
++         <div className="flex items-center gap-4">
++           <div className="p-2.5 bg-accent-blue/10 border border-accent-blue/20 shadow-inner rounded-xl">
++             <Bot className="w-6 h-6 text-accent-blue" />
++           </div>
++           <div>
++             <h2 className="text-xl font-bold tracking-tight text-primary">GCIP Intelligence Agent</h2>
++             <div className="flex items-center gap-2 mt-0.5">
++               <span className="w-2 h-2 rounded-full bg-accent-green shadow-[0_0_8px_#3FB950]" />
++               <span className="text-xs font-semibold uppercase tracking-widest text-accent-green">System Online</span>
++             </div>
++           </div>
++         </div>
++       </div>
++ 
++       {/* 🗨️ Middle Section: Scrollable Chat Area */}
++       <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6 bg-base">
++         {messages.map((msg, index) => (
++           <ChatMessage key={index} role={msg.role} content={msg.content} />
++         ))}
++         
++         {loading && (
++           <div className="flex gap-4 w-full animate-in fade-in duration-300">
++              <div className="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center border shadow-sm bg-surface border-hover text-accent-blue">
++                <Bot className="w-5 h-5" />
++              </div>
++              <div className="flex flex-col items-start justify-center min-h-[40px]">
++                <div className="flex items-center gap-2 h-full text-muted px-4 py-2.5 bg-surface border border-hover rounded-2xl rounded-tl-sm shadow-md">
++                   <Loader2 className="w-4 h-4 animate-spin text-accent-blue" />
++                   <span className="text-sm font-medium">Agent is analyzing...</span>
++                </div>
++              </div>
+++>>>>>>> origin/feature/memberB-frontend
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+++<<<<<<< HEAD
+ +      <div className="chat-input-row">
+ +        <input
+ +          className="chat-input"
+ +          placeholder="e.g. How does the Sudan conflict affect oil supply?"
+ +          value={input}
+ +          onChange={(e) => setInput(e.target.value)}
+ +          onKeyDown={handleKeyDown}
+ +          disabled={chatLoading}
+ +        />
+ +        <button
+ +          className="chat-btn"
+ +          onClick={sendMessage}
+ +          disabled={chatLoading || !input.trim()}
+ +        >
+ +          Send
+ +        </button>
+ +      </div>
+ +    </div>
+ +  );
+ +}
+++=======
++ 
++       {/* 📥 Container below messages layout padding wrapper */}
++       <div className="p-4 md:px-8 pb-8 shrink-0 relative bg-gradient-to-t from-base to-transparent border-t border-hover/50 pt-6">
++         <div className="max-w-4xl mx-auto w-full">
++           
++           {/* Example Query Chips */}
++           <div className="flex items-center flex-wrap gap-2 mb-4">
++             {EXAMPLE_QUERIES.map((query, index) => (
++               <button
++                 key={index}
++                 onClick={() => handleSend(query)}
++                 disabled={loading}
++                 className="text-xs font-semibold tracking-wide px-3 py-1.5 bg-surface border border-hover hover:border-accent-blue/50 text-muted hover:text-accent-blue hover:bg-accent-blue/5 rounded-full transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-1.5 shadow-sm group"
++               >
++                 <Sparkles className="w-3 h-3 group-hover:text-accent-blue transition-colors" />
++                 {query}
++               </button>
++             ))}
++           </div>
++ 
++           {/* Text Input Area */}
++           <div className="flex items-end gap-3 w-full bg-surface border border-hover rounded-2xl p-2 shadow-xl focus-within:border-accent-blue/50 focus-within:ring-1 focus-within:ring-accent-blue/50 transition-all">
++             <textarea
++               value={input}
++               onChange={(e) => setInput(e.target.value)}
++               onKeyDown={handleKeyDown}
++               placeholder="Ask the intelligence agent about active conflicts, systems or predictions..."
++               disabled={loading}
++               className="flex-1 bg-transparent text-primary px-3 py-2.5 focus:outline-none min-h-[44px] max-h-[150px] resize-none text-sm placeholder:text-muted/60 disabled:opacity-50"
++               rows={1}
++             />
++             <button
++               onClick={() => handleSend(input)}
++               disabled={!input.trim() || loading}
++               className="flex-shrink-0 p-3 h-[44px] w-[44px] bg-accent-blue text-white rounded-xl hover:bg-accent-blue/90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-accent-blue/20 flex items-center justify-center group"
++             >
++               <Send className="w-5 h-5 group-hover:-translate-y-0.5 group-hover:translate-x-0.5 transition-transform" />
++             </button>
++           </div>
++           
++         </div>
++       </div>
++     </div>
++   );
++ };
++ 
++ export default AIChat;
+++>>>>>>> origin/feature/memberB-frontend
+diff --cc frontend/src/index.css
+index 13ff547,785dff1..0000000
+--- a/frontend/src/index.css
++++ b/frontend/src/index.css
+@@@ -1,419 -1,9 +1,431 @@@
+++<<<<<<< HEAD
+ +/* ── GCIP Global Styles ──────────────────────────────────────────────────── */
+ +
+ +*,
+ +*::before,
+ +*::after {
+ +  margin: 0;
+ +  padding: 0;
+ +  box-sizing: border-box;
+ +}
+ +
+ +:root {
+ +  --bg-primary: #0f1117;
+ +  --bg-secondary: #1a1d27;
+ +  --bg-card: #222639;
+ +  --border: #2e3348;
+ +  --text-primary: #e4e6f0;
+ +  --text-secondary: #8b8fa3;
+ +  --accent: #6c63ff;
+ +  --accent-hover: #7f78ff;
+ +  --success: #34d399;
+ +  --warning: #fbbf24;
+ +  --danger: #f87171;
+ +  --critical: #ef4444;
+ +  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+ +  --font-mono: "JetBrains Mono", monospace;
+ +}
+ +
+ +html,
+ +body,
+ +#root {
+ +  height: 100%;
+ +}
+ +
+ +body {
+ +  font-family: var(--font-sans);
+ +  background: var(--bg-primary);
+ +  color: var(--text-primary);
+ +  line-height: 1.6;
+ +  -webkit-font-smoothing: antialiased;
+ +}
+ +
+ +/* ── Scrollbar ─────────────────────────────────────────────────────────────── */
+ +::-webkit-scrollbar {
+ +  width: 6px;
+ +}
+ +::-webkit-scrollbar-track {
+ +  background: var(--bg-primary);
+ +}
+ +::-webkit-scrollbar-thumb {
+ +  background: var(--border);
+ +  border-radius: 3px;
+ +}
+ +
+ +/* ── Layout ────────────────────────────────────────────────────────────────── */
+ +.app {
+ +  display: flex;
+ +  flex-direction: column;
+ +  min-height: 100vh;
+ +}
+ +
+ +.header {
+ +  background: var(--bg-secondary);
+ +  border-bottom: 1px solid var(--border);
+ +  padding: 1rem 2rem;
+ +  display: flex;
+ +  align-items: center;
+ +  justify-content: space-between;
+ +}
+ +
+ +.header h1 {
+ +  font-size: 1.25rem;
+ +  font-weight: 700;
+ +  letter-spacing: -0.02em;
+ +}
+ +
+ +.header h1 span {
+ +  color: var(--accent);
+ +}
+ +
+ +.header-status {
+ +  font-size: 0.75rem;
+ +  color: var(--text-secondary);
+ +  display: flex;
+ +  align-items: center;
+ +  gap: 0.5rem;
+ +}
+ +
+ +.status-dot {
+ +  width: 8px;
+ +  height: 8px;
+ +  border-radius: 50%;
+ +  background: var(--success);
+ +  display: inline-block;
+ +}
+ +
+ +.status-dot.error {
+ +  background: var(--danger);
+ +}
+ +
+ +.main {
+ +  flex: 1;
+ +  display: grid;
+ +  grid-template-columns: 1fr 1fr;
+ +  grid-template-rows: auto 1fr;
+ +  gap: 1rem;
+ +  padding: 1.5rem 2rem;
+ +  overflow: auto;
+ +}
+ +
+ +/* ── Cards ─────────────────────────────────────────────────────────────────── */
+ +.card {
+ +  background: var(--bg-card);
+ +  border: 1px solid var(--border);
+ +  border-radius: 12px;
+ +  padding: 1.25rem;
+ +  display: flex;
+ +  flex-direction: column;
+ +}
+ +
+ +.card-title {
+ +  font-size: 0.8rem;
+ +  font-weight: 600;
+ +  text-transform: uppercase;
+ +  letter-spacing: 0.06em;
+ +  color: var(--text-secondary);
+ +  margin-bottom: 1rem;
+ +}
+ +
+ +/* ── Events Panel ──────────────────────────────────────────────────────────── */
+ +.events-panel {
+ +  grid-row: 1 / 3;
+ +  overflow-y: auto;
+ +}
+ +
+ +.event-item {
+ +  padding: 0.75rem;
+ +  border-radius: 8px;
+ +  border: 1px solid transparent;
+ +  cursor: pointer;
+ +  transition: all 0.15s ease;
+ +  margin-bottom: 0.5rem;
+ +}
+ +
+ +.event-item:hover {
+ +  background: rgba(108, 99, 255, 0.08);
+ +  border-color: var(--border);
+ +}
+ +
+ +.event-item.selected {
+ +  background: rgba(108, 99, 255, 0.12);
+ +  border-color: var(--accent);
+ +}
+ +
+ +.event-title {
+ +  font-size: 0.9rem;
+ +  font-weight: 600;
+ +  margin-bottom: 0.25rem;
+ +}
+ +
+ +.event-meta {
+ +  display: flex;
+ +  gap: 0.75rem;
+ +  font-size: 0.75rem;
+ +  color: var(--text-secondary);
+ +}
+ +
+ +.severity-badge {
+ +  font-size: 0.65rem;
+ +  font-weight: 600;
+ +  text-transform: uppercase;
+ +  padding: 2px 8px;
+ +  border-radius: 4px;
+ +  letter-spacing: 0.04em;
+ +}
+ +
+ +.severity-badge.critical {
+ +  background: rgba(239, 68, 68, 0.15);
+ +  color: var(--critical);
+ +}
+ +
+ +.severity-badge.high {
+ +  background: rgba(251, 191, 36, 0.15);
+ +  color: var(--warning);
+ +}
+ +
+ +.severity-badge.medium {
+ +  background: rgba(52, 211, 153, 0.15);
+ +  color: var(--success);
+ +}
+ +
+ +/* ── Agent Chat ────────────────────────────────────────────────────────────── */
+ +.agent-panel {
+ +  display: flex;
+ +  flex-direction: column;
+ +}
+ +
+ +.chat-messages {
+ +  flex: 1;
+ +  overflow-y: auto;
+ +  margin-bottom: 1rem;
+ +  display: flex;
+ +  flex-direction: column;
+ +  gap: 0.75rem;
+ +}
+ +
+ +.chat-msg {
+ +  padding: 0.75rem 1rem;
+ +  border-radius: 8px;
+ +  font-size: 0.85rem;
+ +  line-height: 1.6;
+ +  max-width: 95%;
+ +}
+ +
+ +.chat-msg.user {
+ +  background: var(--accent);
+ +  color: #fff;
+ +  align-self: flex-end;
+ +  border-bottom-right-radius: 2px;
+ +}
+ +
+ +.chat-msg.ai {
+ +  background: var(--bg-secondary);
+ +  border: 1px solid var(--border);
+ +  align-self: flex-start;
+ +  border-bottom-left-radius: 2px;
+ +}
+ +
+ +.chat-msg.ai h1,
+ +.chat-msg.ai h2,
+ +.chat-msg.ai h3 {
+ +  font-size: 0.9rem;
+ +  margin: 0.5rem 0 0.25rem;
+ +}
+ +
+ +.chat-msg.ai p {
+ +  margin-bottom: 0.4rem;
+ +}
+ +
+ +.chat-msg.ai ul,
+ +.chat-msg.ai ol {
+ +  padding-left: 1.2rem;
+ +  margin-bottom: 0.4rem;
+ +}
+ +
+ +.chat-msg.ai strong {
+ +  color: var(--accent);
+ +}
+ +
+ +.chat-input-row {
+ +  display: flex;
+ +  gap: 0.5rem;
+ +}
+ +
+ +.chat-input {
+ +  flex: 1;
+ +  padding: 0.65rem 1rem;
+ +  background: var(--bg-secondary);
+ +  border: 1px solid var(--border);
+ +  border-radius: 8px;
+ +  color: var(--text-primary);
+ +  font-family: var(--font-sans);
+ +  font-size: 0.85rem;
+ +  outline: none;
+ +  transition: border-color 0.15s;
+ +}
+ +
+ +.chat-input:focus {
+ +  border-color: var(--accent);
+ +}
+ +
+ +.chat-btn {
+ +  padding: 0.65rem 1.25rem;
+ +  background: var(--accent);
+ +  color: #fff;
+ +  border: none;
+ +  border-radius: 8px;
+ +  font-weight: 600;
+ +  font-size: 0.85rem;
+ +  cursor: pointer;
+ +  transition: background 0.15s;
+ +  white-space: nowrap;
+ +}
+ +
+ +.chat-btn:hover {
+ +  background: var(--accent-hover);
+ +}
+ +
+ +.chat-btn:disabled {
+ +  opacity: 0.5;
+ +  cursor: not-allowed;
+ +}
+ +
+ +/* ── Narratives ────────────────────────────────────────────────────────────── */
+ +.narrative-item {
+ +  margin-bottom: 0.75rem;
+ +  padding: 0.75rem;
+ +  background: var(--bg-secondary);
+ +  border-radius: 8px;
+ +  border: 1px solid var(--border);
+ +}
+ +
+ +.narrative-label {
+ +  font-weight: 600;
+ +  font-size: 0.85rem;
+ +  margin-bottom: 0.25rem;
+ +}
+ +
+ +.narrative-desc {
+ +  font-size: 0.8rem;
+ +  color: var(--text-secondary);
+ +  margin-bottom: 0.4rem;
+ +}
+ +
+ +.narrative-bar-bg {
+ +  height: 6px;
+ +  background: var(--bg-primary);
+ +  border-radius: 3px;
+ +  overflow: hidden;
+ +}
+ +
+ +.narrative-bar {
+ +  height: 100%;
+ +  background: var(--accent);
+ +  border-radius: 3px;
+ +  transition: width 0.4s ease;
+ +}
+ +
+ +/* ── Loading / Empty ───────────────────────────────────────────────────────── */
+ +.loading,
+ +.empty {
+ +  color: var(--text-secondary);
+ +  font-size: 0.85rem;
+ +  padding: 2rem;
+ +  text-align: center;
+ +}
+ +
+ +.spinner {
+ +  display: inline-block;
+ +  width: 18px;
+ +  height: 18px;
+ +  border: 2px solid var(--border);
+ +  border-top-color: var(--accent);
+ +  border-radius: 50%;
+ +  animation: spin 0.6s linear infinite;
+ +  margin-right: 0.5rem;
+ +  vertical-align: middle;
+ +}
+ +
+ +@keyframes spin {
+ +  to {
+ +    transform: rotate(360deg);
+ +  }
+ +}
+ +
+ +/* ── Responsive ────────────────────────────────────────────────────────────── */
+ +@media (max-width: 900px) {
+ +  .main {
+ +    grid-template-columns: 1fr;
+ +    grid-template-rows: auto;
+ +    padding: 1rem;
+ +  }
+ +  .events-panel {
+ +    grid-row: auto;
+ +    max-height: 40vh;
+ +  }
+ +}
+ +
+ +/* ── Confidence Badge ──────────────────────────────────────────────────────── */
+ +.confidence-badge {
+ +  display: inline-block;
+ +  margin-top: 0.75rem;
+ +  padding: 4px 12px;
+ +  font-size: 0.7rem;
+ +  font-weight: 700;
+ +  text-transform: uppercase;
+ +  letter-spacing: 0.06em;
+ +  border: 1.5px solid;
+ +  border-radius: 6px;
+ +  background: rgba(0, 0, 0, 0.2);
+ +}
+ +
+ +/* ── Sources Panel ─────────────────────────────────────────────────────────── */
+ +.sources-panel {
+ +  margin-top: 0.6rem;
+ +  padding: 0.5rem 0.75rem;
+ +  background: var(--bg-primary);
+ +  border-radius: 6px;
+ +  border: 1px solid var(--border);
+ +  font-size: 0.75rem;
+ +}
+ +
+ +.sources-title {
+ +  font-weight: 600;
+ +  color: var(--text-secondary);
+ +  margin-bottom: 0.25rem;
+ +  text-transform: uppercase;
+ +  letter-spacing: 0.04em;
+ +  font-size: 0.65rem;
+ +}
+ +
+ +.sources-list {
+ +  list-style: none;
+ +  padding: 0;
+ +  margin: 0;
+ +  display: flex;
+ +  flex-wrap: wrap;
+ +  gap: 0.5rem;
+ +}
+ +
+ +.sources-list li {
+ +  color: var(--accent);
+ +  font-size: 0.75rem;
+ +}
+ +
+ +.sources-list li::before {
+ +  content: "•";
+ +  margin-right: 0.35rem;
+ +  color: var(--text-secondary);
+ +}
+++=======
++ @tailwind base;
++ @tailwind components;
++ @tailwind utilities;
++ 
++ @layer base {
++   body {
++     @apply bg-base text-primary font-sans antialiased;
++   }
++ }
+++>>>>>>> origin/feature/memberB-frontend
+diff --cc frontend/src/main.jsx
+index b91620d,b9a1a6d..0000000
+--- a/frontend/src/main.jsx
++++ b/frontend/src/main.jsx
+@@@ -1,10 -1,10 +1,23 @@@
+++<<<<<<< HEAD
+ +import React from "react";
+ +import ReactDOM from "react-dom/client";
+ +import App from "./App.jsx";
+ +import "./index.css";
+ +
+ +ReactDOM.createRoot(document.getElementById("root")).render(
+ +  <React.StrictMode>
+ +    <App />
+ +  </React.StrictMode>
+ +);
+++=======
++ import { StrictMode } from 'react'
++ import { createRoot } from 'react-dom/client'
++ import './index.css'
++ import App from './App.jsx'
++ 
++ createRoot(document.getElementById('root')).render(
++   <StrictMode>
++     <App />
++   </StrictMode>,
++ )
+++>>>>>>> origin/feature/memberB-frontend
+diff --cc frontend/vite.config.js
+index 7322405,8b0f57b..0000000
+--- a/frontend/vite.config.js
++++ b/frontend/vite.config.js
+@@@ -1,10 -1,7 +1,20 @@@
+++<<<<<<< HEAD
+ +import { defineConfig } from "vite";
+ +import react from "@vitejs/plugin-react";
+ +
+ +export default defineConfig({
+ +  plugins: [react()],
+ +  server: {
+ +    port: 5173,
+ +    host: true,
+ +  },
+ +});
+++=======
++ import { defineConfig } from 'vite'
++ import react from '@vitejs/plugin-react'
++ 
++ // https://vite.dev/config/
++ export default defineConfig({
++   plugins: [react()],
++ })
+++>>>>>>> origin/feature/memberB-frontend
