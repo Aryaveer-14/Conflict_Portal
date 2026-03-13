@@ -61,7 +61,7 @@ const EventDeepDive = ({ event, onClose }) => {
             </span>
           </div>
           <div className="flex gap-1">
-            {Array.from({ length: 5 }).map((_, i) => (
+            {[...Array(5).keys()].map((i) => (
               <div
                 key={i}
                 className="h-1.5 flex-1 rounded-sm transition-all"
