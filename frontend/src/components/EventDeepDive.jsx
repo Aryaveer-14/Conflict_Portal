@@ -1,4 +1,4 @@
-import { X, AlertTriangle, BrainCircuit, Sparkles, TrendingUp, Shield } from 'lucide-react';
+import { X, BrainCircuit, Sparkles, Shield } from 'lucide-react';
 import ImpactRadar from './ImpactRadar';
 import NarrativeComparison from './NarrativeComparison';
 
