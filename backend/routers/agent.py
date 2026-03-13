@@ -13,6 +13,7 @@ Member C — AI/ML Lead and Integration Architect
 from datetime import datetime, timezone
 import asyncio
 import re
+from typing import Any, Dict, Optional, Union
 
 from fastapi import APIRouter
 from pydantic import BaseModel
@@ -29,7 +30,7 @@ router = APIRouter()
 class AgentQuery(BaseModel):
     """Incoming user question with optional context."""
     query: str
-    context: dict = {}
+    context: Union[Dict[str, Any], str, None] = None
 
 
 # ── System Prompt ──────────────────────────────────────────────────────────────
@@ -111,7 +112,11 @@ async def query_agent(body: AgentQuery) -> dict:
         }
     """
 
-    detail_level = str(body.context.get("detail_level", "detailed")).strip().lower()
+    raw_context = body.context if body.context is not None else {}
+    if not isinstance(raw_context, dict):
+        raw_context = {}
+
+    detail_level = str(raw_context.get("detail_level", "detailed")).strip().lower()
     if detail_level not in ("short", "detailed"):
         detail_level = "detailed"
 
