@@ -69,16 +69,16 @@ test_endpoint "Backend Health Check" "GET" "/health" "" "200"
 echo "📋 2. AI Agent Endpoint"
 echo "---"
 test_endpoint "Valid Agent Query" "POST" "/agent/" \
-    '{"query":"What is Sudan?","context":""}' "200"
+    '{"query":"What is Sudan?","context":{}}' "200"
 
 test_endpoint "Agent Query with Context" "POST" "/agent/" \
-    '{"query":"How do conflicts affect oil?","context":"Focus on crude prices"}' "200"
+    '{"query":"How do conflicts affect oil?","context":{"detail_level":"detailed"}}' "200"
 
 test_endpoint "Agent Query - Invalid (empty)" "POST" "/agent/" \
-    '{"query":"","context":""}' "422"
+    '{"query":"","context":{}}' "422"
 
 test_endpoint "Agent Query - Invalid (short)" "POST" "/agent/" \
-    '{"query":"Hi","context":""}' "422"
+    '{"query":"Hi","context":{}}' "422"
 
 # ── Events Endpoint ────────────────────────────────────────────────────────────
 
