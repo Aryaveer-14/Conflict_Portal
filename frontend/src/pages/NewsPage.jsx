@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import React, { useState, useEffect, useCallback } from 'react';
+import { motion as Motion } from 'framer-motion';
 import { RefreshCw, Filter, AlertTriangle, TrendingUp, Globe, MapPin } from 'lucide-react';
-import { api, newsAPI } from '../api/client';
+import { newsAPI } from '../api/client';
 
 const NewsPage = () => {
   const [articles, setArticles] = useState([]);
@@ -10,7 +10,7 @@ const NewsPage = () => {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [activeFilter, setActiveFilter] = useState('all');
 
-  const fetchNews = async () => {
+  const fetchNews = useCallback(async () => {
     try {
       setLoading(true);
       const queryMap = {
@@ -81,13 +81,13 @@ const NewsPage = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [activeFilter]);
 
   useEffect(() => {
     fetchNews();
     const interval = setInterval(fetchNews, 60000); // Poll every 60 seconds
     return () => clearInterval(interval);
-  }, [activeFilter]);
+  }, [fetchNews]);
 
   const filters = [
     { id: 'all', label: 'All Updates' },
@@ -167,7 +167,7 @@ const NewsPage = () => {
           ))
         ) : (
           articles.map((article, i) => (
-            <motion.div
+            <Motion.div
               key={article.id || i}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -224,7 +224,7 @@ const NewsPage = () => {
                   </a>
                 )}
               </div>
-            </motion.div>
+            </Motion.div>
           ))
         )}
       </div>

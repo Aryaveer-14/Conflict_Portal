@@ -31,7 +31,6 @@ const AIChat = () => {
   const [loading, setLoading] = useState(false);
   const [streamingIdx, setStreamingIdx] = useState(null);
   const [displayedText, setDisplayedText] = useState("");
-  const [isPaused, setIsPaused] = useState(false);
   const intervalRef = useRef(null);
   const typingStateRef = useRef({ fullText: "", currentIndex: 0 });
   const messagesEndRef = useRef(null);
@@ -57,7 +56,6 @@ const simulateTyping = useCallback((text, messageIndex, startIndex = 0) => {
     
     if (startIndex === 0) setDisplayedText("");
     setStreamingIdx(messageIndex);
-    setIsPaused(false);
 
     const typeChar = () => {
       if (typingStateRef.current.currentIndex < typingStateRef.current.fullText.length) {
@@ -143,8 +141,6 @@ const simulateTyping = useCallback((text, messageIndex, startIndex = 0) => {
   const handleExampleClick = (query) => {
     handleSubmit(null, query);
   };
-
-  const isStreaming = streamingIdx !== null;
 
   return (
     <div className="flex flex-col h-full w-full max-w-4xl mx-auto shadow-lg rounded-lg overflow-hidden border border-accent-green/20 bg-base">

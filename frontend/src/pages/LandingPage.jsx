@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion as Motion } from 'framer-motion';
 import { Globe, Activity, ShieldAlert, Zap, ArrowRight, Database, ChevronRight, Terminal } from 'lucide-react';
 
 const LandingPage = () => {
@@ -63,7 +63,7 @@ const LandingPage = () => {
           LIVE INTEL
         </div>
         <div className="flex-1 overflow-hidden relative flex items-center h-full whitespace-nowrap">
-          <motion.div 
+          <Motion.div
             animate={{ x: [0, -2000] }}
             transition={{ repeat: Infinity, ease: "linear", duration: 30 }}
             className="flex gap-12 pl-4"
@@ -73,14 +73,14 @@ const LandingPage = () => {
                 {news} <span className="mx-6 text-accent-green/50">///</span>
               </span>
             ))}
-          </motion.div>
+          </Motion.div>
         </div>
       </div>
 
       <div className="relative z-10 container mx-auto px-6 pt-12 pb-24 flex-1 flex flex-col justify-center">
         
         {/* Top Header / News Ticker Vibe */}
-        <motion.div 
+        <Motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
@@ -93,11 +93,11 @@ const LandingPage = () => {
             <span className="text-accent-green font-bold">GCIP</span> // SYS_ACTIVE //
             <span className="ml-4 font-mono text-muted">{new Date().toISOString().split('T')[0]}</span>
           </p>
-        </motion.div>
+        </Motion.div>
 
         {/* Hero Section */}
         <div className="max-w-4xl relative">
-          <motion.div
+          <Motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -106,9 +106,9 @@ const LandingPage = () => {
             <Terminal className="w-4 h-4 text-accent-green" />
             <span>{typedText}</span>
             <span className="w-2 h-4 bg-accent-green animate-pulse"></span>
-          </motion.div>
+          </Motion.div>
 
-          <motion.h1 
+          <Motion.h1
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.7, delay: 0.4, ease: "easeOut" }}
@@ -117,18 +117,18 @@ const LandingPage = () => {
             <span className="text-primary">Anticipate</span> <br/>
             <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-accent-green via-primary to-accent-green pr-2 drop-shadow-[0_0_15px_rgba(0,255,65,0.3)]">Global Impact.</span><br/>
             <span className="text-primary">Secure the Future.</span>
-          </motion.h1>
+          </Motion.h1>
 
-          <motion.p 
+          <Motion.p
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, delay: 0.6 }}
             className="text-lg md:text-xl text-muted max-w-2xl leading-relaxed mb-10 border-l-2 border-accent-green pl-6 py-2 bg-gradient-to-r from-accent-green/5 to-transparent backdrop-blur-sm"
           >
             The <strong className="text-white">Global Conflict Impact Intelligence Platform (GCIP)</strong> translates raw worldwide geopolitical volatility into predictable, actionable intelligence. Operating at the forefront of defense and economics, we decode supply chain disruption and international risk in real-time.
-          </motion.p>
+          </Motion.p>
 
-          <motion.div 
+          <Motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.8 }}
@@ -150,11 +150,11 @@ const LandingPage = () => {
               SYSTEM CAPABILITIES
               <ChevronRight className="w-4 h-4" />
             </button>
-          </motion.div>
+          </Motion.div>
         </div>
 
         {/* Feature Highlights */}
-        <motion.div 
+        <Motion.div
           id="features"
           initial={{ opacity: 0, y: 40 }}
           animate={{ opacity: 1, y: 0 }}
@@ -196,10 +196,10 @@ const LandingPage = () => {
               Interact with our Gemini-driven agent to run scenario forecasts. "What if the Red Sea is completely blocked?" Get multi-step reasoning and probability scores for global stability.
             </p>
           </div>
-        </motion.div>
+        </Motion.div>
         
         {/* Footer info */}
-        <motion.div 
+        <Motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 1.5 }}
@@ -214,7 +214,7 @@ const LandingPage = () => {
             <span>AI CORE: GOOGLE GEMINI</span>
             <span>VER: 3.0.0</span>
           </div>
-        </motion.div>
+        </Motion.div>
 
       </div>
     </div>

@@ -1,44 +1,60 @@
 ##
 ## docker-compose.yml
 ## -------------------
-## Docker Compose configuration for the GCIP platform.
-## Defines two services: backend (FastAPI) and frontend (React/Vite).
+## Full MERN stack: MongoDB + Express (Node.js) + React/Vite
 ## Run with:  docker-compose up --build
 ##
-## Expected result:
-##   Backend  → http://localhost:8000
-##   Frontend → http://localhost:5173
+## Services:
+##   mongo    → mongodb://localhost:27017
+##   server   → http://localhost:8000  (Express API)
+##   frontend → http://localhost:5173  (React/Vite)
 ##
 
 services:
 
-  # ── FastAPI Backend Service ──────────────────────────────────────────────────
-  # Runs the Python/FastAPI backend with Uvicorn
-  # Loads GEMINI_API_KEY and other secrets from backend/.env
-  backend:
-    build:
-      context: ./backend                    # Build from the backend directory
+  # ── MongoDB ──────────────────────────────────────────────────────────────────
+  mongo:
+    image: mongo:7.0
+    restart: unless-stopped
     ports:
-      - "8000:8000"                          # Map container port 8000 → host port 8000
-    env_file:
-      - ./backend/.env                       # Load environment variables (GEMINI_API_KEY)
+      - "27017:27017"
     volumes:
-      - ./backend:/app                       # Mount source code for live reload
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: gcip
 
-  # ── React/Vite Frontend Service ──────────────────────────────────────────────
-  # Runs the Vite dev server for the React frontend
-  # Connects to backend via VITE_API_BASE_URL
+  # ── Express.js Backend ───────────────────────────────────────────────────────
+  server:
+    build:
+      context: ./server
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./server/.env
+    environment:
+      - MONGODB_URI=mongodb://mongo:27017/gcip
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    command: npm run dev
+    depends_on:
+      - mongo
+
+  # ── React/Vite Frontend ───────────────────────────────────────────────────────
   frontend:
     build:
-      context: ./frontend                    # Build from the frontend directory
+      context: ./frontend
     ports:
-      - "5173:5173"                          # Map container port 5173 → host port 5173
+      - "5173:5173"
     environment:
-      - VITE_API_BASE_URL=http://localhost:8000   # Frontend calls backend at this URL
+      - VITE_API_BASE_URL=http://localhost:8000
     volumes:
-      - ./frontend:/app                      # Mount source code for live reload
-      - /app/node_modules                    # Exclude node_modules from volume mount
+      - ./frontend:/app
+      - /app/node_modules
     command: npm run dev -- --host
     depends_on:
-      - backend                              # Wait for backend to start first
+      - server
+
+volumes:
+  mongo_data:
+    driver: local

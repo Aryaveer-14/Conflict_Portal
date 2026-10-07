@@ -129,16 +129,33 @@ export const narrativesAPI = {
 export const agentAPI = {
   /**
    * Send a natural-language question to the AI agent.
-   * @param {string} question        - The user's query about global conflicts.
-   * @param {Object} [context={}]    - Optional structured context to pass alongside the query.
-   * @returns {Promise<AxiosResponse<{ success: boolean, data: { response: string } }>>}
+   * @param {string} question           - The user's query about global conflicts.
+   * @param {Object} [context={}]       - Optional structured context.
+   * @param {string} [conversation_id]  - Optional conversation ID for history continuity.
+   * @returns {Promise<AxiosResponse<{ success: boolean, data: { response: string }, conversation_id: string }>>}
    *
    * @example
    * const res = await agentAPI.query("How does this conflict affect oil supply?");
    * console.log(res.data.data.response);
    */
-  query: (question, context = {}) =>
-    api.post("/agent/", { query: question, context }),
+  query: (question, context = {}, conversation_id = undefined) =>
+    api.post("/agent/", { query: question, context, ...(conversation_id && { conversation_id }) }),
+};
+
+// ── Chat History ──────────────────────────────────────────────────────────────
+
+/**
+ * chatHistoryAPI
+ * --------------
+ * Retrieve persisted conversation history from MongoDB (new MERN feature).
+ */
+export const chatHistoryAPI = {
+  /**
+   * Fetch the full chat history for a given conversation.
+   * @param {string} conversationId - The conversation UUID.
+   * @returns {Promise<AxiosResponse>}
+   */
+  get: (conversationId) => api.get(`/agent/history/${conversationId}`),
 };
 
 // ── Commodities ───────────────────────────────────────────────────────────────
